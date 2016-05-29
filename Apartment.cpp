@@ -20,7 +20,7 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) { //T
 	int area_1(apartment_1.getTotalArea()), area_2(apartment_2.getTotalArea()),
 		price_1(apartment_1.getPrice()), price_2(apartment_2.getPrice());
 	if (area_1 != 0 && area_2 != 0) {
-		int ratio_1(price_1 / area_1), ratio_2(price_2 / area_2);
+		int ratio_1(price_1 *area_2), ratio_2(price_2 * area_1);// if areas aren't 0: p1/a1 < p2/a2 <=> p1*a2 < p2*a1. No FP numbers.
 		if (ratio_1 != ratio_2) {
 			return (ratio_1 < ratio_2);
 		}
