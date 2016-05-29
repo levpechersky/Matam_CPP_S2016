@@ -19,10 +19,8 @@ public:
 	/* Operators */
 	Apartment& operator= (const Apartment& apartment); //TODO should handle self-assignments
 	Apartment& operator+= (const Apartment& apartment);
-	// following 2 throw OutOfApartmentBoundsException
-	const SquareType& operator() (int row, int col) const; //TODO not 100% sure about those const's
+	const SquareType& operator() (int row, int col) const;
 	SquareType& operator() (int row, int col);
-	bool operator< (const Apartment& apartment) const; //TODO maybe should be friend
 
 	/* Other methods */
 	int getTotalArea() const;
@@ -33,13 +31,17 @@ public:
 private:
 	SquareType** layout;
 	int length, width, price;
+
+	bool squareIsInBound(int row, int col) const;
+	SquareType** joinLayoutsVertically(const Apartment& apartment) const;
+	SquareType** joinLayoutsHorizontally(const Apartment& apartment) const;
 };
 
 /*****************************
  * External operator function
  ****************************/
 
-//TODO this one should be implemented using += operator
 Apartment operator+(const Apartment& apartment_1, const Apartment& apartment_2);
+bool operator< (const Apartment& apartment_1, const Apartment& apartment_2);
 
 #endif //MTM4_APARTMENT_H
