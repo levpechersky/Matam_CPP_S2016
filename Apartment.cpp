@@ -170,9 +170,9 @@ Apartment::Apartment(SquareType** squares, int length, int width, int price) {
 }
 
 Apartment::Apartment(const Apartment& apartment) :
-		length(apartment.length), width(apartment.width), price(
-				apartment.price), layout(
-				copyBoard(apartment.layout, length, width)) {
+	    length(apartment.length), width(apartment.width),
+		price(apartment.price),
+		layout(copyBoard(apartment.layout, length, width)) {
 }
 
 Apartment::~Apartment() {

@@ -48,6 +48,7 @@ bool testConstructor() {
 	Apartment::SquareType** board = createBoardEmpty(length, width);
 	const int price = 1;
 	deleteSquares(board, length);
+	ASSERT_THROW(Apartment::IllegalArgException,Apartment apartment(board,length,width,price));
 
 	return true;
 }
