@@ -123,10 +123,8 @@ Apartment& Apartment::operator+=(const Apartment& apartment) {
 }
 
 const Apartment::SquareType& Apartment::operator()(int row, int col) const {
-	if (!squareIsInBound(row, col)) {
-		throw OutOfApartmentBoundsException();
-	}
-	return layout[row][col];
+	return const_cast<SquareType &>(static_cast<const SquareType &>((*this)(row,
+		col)));//TODO if we aren't allowed to use const_cast - just copy from non-const version
 }
 
 Apartment::SquareType& Apartment::operator()(int row, int col) {
