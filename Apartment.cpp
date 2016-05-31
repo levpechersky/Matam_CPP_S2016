@@ -18,12 +18,22 @@ Apartment:: SquareType** Apartment::allocateBoard(int length, int width){
 	return layout;
 }
 
+<<<<<<< HEAD
 Apartment:: SquareType** Apartment::copyBoard
           (Apartment::SquareType**squares, int length, int width){
 	SquareType**layout=allocateBoard(length,width);
 	for (int i = 0; i < length; i++){
 		for(int j=0; j<width; j++){
 			layout[i][j]=squares[i][j];
+=======
+bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) { //TODO looks a bit ugly
+	int area_1(apartment_1.getTotalArea()), area_2(apartment_2.getTotalArea()),
+		price_1(apartment_1.getPrice()), price_2(apartment_2.getPrice());
+	if (area_1 != 0 && area_2 != 0) {
+		int ratio_1(price_1 / area_1), ratio_2(price_2 / area_2);
+		if (ratio_1 != ratio_2) {
+			return (ratio_1 < ratio_2);
+>>>>>>> parent of d48a074... Minor changes at operator< function. Found a trick to avoid FP
 		}
 	}
 	return layout;
