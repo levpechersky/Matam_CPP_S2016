@@ -95,7 +95,7 @@ Apartment::SquareType** Apartment::joinLayoutsHorizontally(
 //*******************************Operators**************************************
 //******************************************************************************
 Apartment& Apartment::operator= (const Apartment& apartment){
-	Apartment temp=copyBoard(apartment.layout,apartment.length,apartment.width);
+	SquareType** temp=copyBoard(apartment.layout,apartment.length,apartment.width);
 	destroyBoard(layout,length);
 	length=apartment.length;
 	width=apartment.width;
@@ -153,6 +153,10 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 	}
 	//if ratios are equal, or both areas are 0 (e.g comapring two "infinities") - compare prices.
 	return price_1 < price_2;
+}
+
+Apartment operator+(const Apartment& apartment_1, const Apartment& apartment_2){
+	return Apartment(apartment_1)+=apartment_2;
 }
 
 //******************************************************************************

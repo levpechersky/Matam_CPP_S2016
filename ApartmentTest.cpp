@@ -1,6 +1,11 @@
 #include <cstdlib>
 #include "Apartment.h"
 #include "MtmTst.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
 
 
 bool apartmentTestExample() {
