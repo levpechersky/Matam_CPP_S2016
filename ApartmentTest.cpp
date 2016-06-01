@@ -2,6 +2,7 @@
 #include "Apartment.h"
 #include "MtmTst.h"
 
+
 bool apartmentTestExample() {
 	/*   const int length = 3;
 	 const int width = 4;
@@ -48,7 +49,8 @@ bool testConstructor() {
 	Apartment::SquareType** board = createBoardEmpty(length, width);
 	const int price = 1;
 	deleteSquares(board, length);
-	ASSERT_THROW(Apartment::IllegalArgException,Apartment apartment(board,length,width,price));
+	ASSERT_THROW(Apartment::IllegalArgException,Apartment(board,length,width,-1));
+	ASSERT_NO_THROW(Apartment(board,length,width,price));
 
 	return true;
 }

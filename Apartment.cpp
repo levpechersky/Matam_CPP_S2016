@@ -94,14 +94,13 @@ Apartment::SquareType** Apartment::joinLayoutsHorizontally(
 //******************************************************************************
 //*******************************Operators**************************************
 //******************************************************************************
-Apartment& Apartment::operator=(const Apartment& apartment) {
-	if (this == &apartment)
-		return *this;
-	destroyBoard(apartment.layout, apartment.length);
-	length = apartment.length;
-	width = apartment.width;
-	price = apartment.price;
-	layout = copyBoard(apartment.layout, length, width);
+Apartment& Apartment::operator= (const Apartment& apartment){
+	Apartment temp=copyBoard(apartment.layout,apartment.length,apartment.width);
+	destroyBoard(layout,length);
+	length=apartment.length;
+	width=apartment.width;
+	price=apartment.price;
+	layout=temp;
 	return *this;
 }
 
@@ -159,14 +158,14 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 //******************************************************************************
 //***************************C'tors, D'tor**************************************
 //******************************************************************************
-Apartment::Apartment(SquareType** squares, int length, int width, int price) {
-	if (!(squares && length > 0 && width > 0 && price >= 0)) {
+Apartment::Apartment(SquareType** squares, int length, int width, int price) :
+	length(length),
+	width(width),
+	price(price),
+	layout(copyBoard(squares,length,width)){
+	if(!(squares && length>0 && width>0 && price>=0)){
 		throw IllegalArgException();
 	}
-	this->length = length;
-	this->width = width;
-	this->price = price;
-	layout = copyBoard(squares, length, width);
 }
 
 Apartment::Apartment(const Apartment& apartment) :
