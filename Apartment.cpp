@@ -1,5 +1,4 @@
 #include "Apartment.h"
-#include <algorithm>
 
 //******************************************************************************
 //**********************Static functions of the Class***************************
@@ -106,14 +105,14 @@ Apartment& Apartment::operator=(const Apartment& apartment) {
 }
 
 Apartment& Apartment::operator+=(const Apartment& apartment) {
-	SquareType** joined = NULL;
+	SquareType** joined = nullptr;
 	int tmp_length = length;
 	if (length == apartment.length && width != apartment.length) {
 		joined = joinLayoutsVertically(apartment);
 		width += apartment.width;
 	} else {
 		joined = joinLayoutsHorizontally(apartment);
-		width = std::max(width, apartment.width);
+		width = width > apartment.width ? width : apartment.width;
 		length += apartment.length;
 	}
 	destroyBoard(layout, tmp_length);
