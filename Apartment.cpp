@@ -1,6 +1,9 @@
 #include "Apartment.h"
 #include <algorithm>
-
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 //******************************************************************************
 //**********************Static functions of the Class***************************
 //******************************************************************************
