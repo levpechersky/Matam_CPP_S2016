@@ -22,7 +22,7 @@ public:
 	 * IllegalArgException - if width or height are not positive,
 	 * price is negative, squares is NULL
 	 * return:
-	 * 	a new apartment object
+	 * a new apartment object
 	 */
 	Apartment(SquareType** squares, int length, int width, int price);
 	/* Apartment copy constractor.
@@ -42,10 +42,10 @@ public:
 
 	/* Apartment assignment operator.
 	 *
-	 * Get a apartment object, and copy it to this.
+	 * Get const reference of a apartment object, and copy it to this.
 	 * @param apartment - the copied apartment object.
 	 * return:
-	 * 	reference to this.
+	 * reference to this.
 	 */
 	Apartment& operator= (const Apartment& apartment);
 	Apartment& operator+= (const Apartment& apartment);
