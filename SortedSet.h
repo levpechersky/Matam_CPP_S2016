@@ -1,7 +1,6 @@
 #ifndef MTM4_SORTEDSET_H
 #define MTM4_SORTEDSET_H
 #include <assert.h>
-#include <cstdlib>
 #include <functional>
 
 // ****************************************************************************
@@ -12,11 +11,11 @@ template <class T>
 class Node {
 private:
 	T* data;
-	Node *next;
+	Node* next;
 
 	friend class SortedSet<T>;
 	//constructor
-	Node(const T &element) : data(new T(element)), next(NULL) {}
+	Node(const T &element) : data(new T(element)), next(nullptr) {}
 	//copy constructor
 	Node(const Node& node) : data(new T(node.data)), next(node.next) {}
 	//destructor
@@ -38,6 +37,9 @@ private:
 // ****************************************************************************
 template <class T, class Compare = std::less<T> >
 class SortedSet {
+private:
+    Node<T>* first;
+
 public:
     class Iterator {
     public:
@@ -64,10 +66,10 @@ public:
     	 * The function deletes the iterator.
     	 */
     	~Iterator() {
-    		node=NULL;
+    		node=nullptr;
     	}
 
-       /**************Operators of iterator******************************
+       /**************Operators of iterator******************************/
 
     	/* Iterator promoting
     	 * There are two versions:
@@ -117,8 +119,8 @@ public:
 		 * @param iterator: a const reference iterator to compare to.
 		 * return: boolean value indicates whether the iterator were not equal.
 		 */
-		bool operator!=(const Iterator& it){
-			return !(*this==it);
+		bool operator!=(const Iterator& iterator){
+			return !(*this==iterator);
 		}
 
     private:
@@ -131,14 +133,16 @@ public:
     	 * return:
     	 * a new iterator object.
     	 */
-    	Iterator(Node<T>* node = NULL) : node(node) {}
+    	Iterator(Node<T>* node = nullptr) : node(node) {}
     };
+
+    SortedSet() : first(nullptr) {};
 
 	/* Sets Iterator to the first element
 	 * return:
 	 *
 	 */
-    const Iterator begin();//TODO not sure about return value type
+    const Iterator begin() const;//TODO not sure about return value type
 
 	/* Sets Iterator to the end of set.
 	 * As a result, iterator doesn't point to valid element,
@@ -146,7 +150,7 @@ public:
 	 * return:
 	 *
 	 */
-    const Iterator end();
+    const Iterator end() const;
 
 	/* Searches the set for an item, that equals <element>.
 	 * If found - iterator will point to found item.
@@ -154,7 +158,7 @@ public:
 	 * return:
 	 *
 	 */
-    const Iterator find(const T& element);
+    const Iterator find(const T& element) const;
 
 	/* Adds an element to set, if it wasn't contained in the set before.
 	 *
@@ -183,13 +187,13 @@ public:
 	 * return:
 	 * new SortedSet, containing an intersection of two sets.
 	 */
-    SortedSet operator&(const SortedSet) const;
+    SortedSet operator&(const SortedSet&) const;
 
 	/*
 	 * return:
 	 * new SortedSet, containing an union of two sets.
 	 */
-    SortedSet operator|(const SortedSet) const;
+    SortedSet operator|(const SortedSet&) const;
 
 	/* Creates new set, containing an elements, which are contained in first
 	 * set (left operand) but aren't contained in the second one (right operand)
@@ -198,7 +202,7 @@ public:
 	 * return:
 	 * new SortedSet, as described above
 	 */
-    SortedSet operator-(const SortedSet) const;
+    SortedSet operator-(const SortedSet&) const;
 
 	/* Creates new set, containing an elements, which are contained in one of
 	 * sets only.
@@ -208,14 +212,7 @@ public:
 	 * return:
 	 * new SortedSet, as described above
 	 */
-    SortedSet operator^(const SortedSet) const;//TODO probably should be implemented as (A|B)-(A&B)
-
-
-private:
-    int size;
-    Node head;
-    Iterator iterator;
-
+    SortedSet operator^(const SortedSet&) const;//TODO probably should be implemented as (A|B)-(A&B)
 };
 
 
