@@ -13,9 +13,12 @@ class Node {
 private:
 	T* data;
 	Node *next;
+
 	friend class SortedSet<T>;
 	//constructor
 	Node(const T &element) : data(new T(element)), next(NULL) {}
+	//copy constructor
+	Node(const Node& node) : data(new T(node.data)), next(node.next) {}
 	//destructor
 	~Node() {
 		delete data;
@@ -28,8 +31,6 @@ private:
 		next = node.next;
 		return *this;
 	}
-	//copy constructor
-	Node(const Node& node) : data(new T(node.data)), next(node.next) {}
 };
 
 // ****************************************************************************
@@ -38,7 +39,7 @@ private:
 template <class T, class Compare = std::less<T> >
 class SortedSet {
 public:
-    class iterator {
+    class Iterator {
     public:
     	/* Iterator copy constructor:
     	 * @param iterator: a const reference for an iterator to copy.
@@ -46,7 +47,7 @@ public:
     	 * a new iterator object.
     	 *
     	 */
-    	iterator(const iterator& iterator) : node(iterator.node) {}
+    	Iterator(const Iterator& iterator) : node(iterator.node) {}
 
     	/* Iterator assignment operator (=):
          * Get const reference of a iterator object, and copy it to this.
@@ -54,7 +55,7 @@ public:
 	     * return:
 	     * reference to this.
     	 */
-    	iterator& operator=(const iterator& iterator) {
+    	Iterator& operator=(const Iterator& iterator) {
     		node = iterator.node;
     		return *this;
     	}
@@ -62,7 +63,7 @@ public:
     	/* Iterator's destructor:
     	 * The function deletes the iterator.
     	 */
-    	~iterator() {
+    	~Iterator() {
     		node=NULL;
     	}
 
@@ -75,7 +76,7 @@ public:
     	 *
     	 * Both versions will not receive parameters.
     	 * return:
-    	 * udpating the iterator which the function was called on, to the next
+    	 * updating the iterator which the function was called on, to the next
     	 * iterator inside set.
     	 * the function assumes the set iterator is not NULL.
     	 */
@@ -84,12 +85,12 @@ public:
    *  the operator return same element. check if null ,
    *  Add appropriate code TODO -END
    */
-    	iterator& operator++(){
+    	Iterator& operator++(){
     		node = node->next;
     		return *this;
     	}
-    	iterator operator++(int){
-    		iterator temp= *this;
+    	Iterator operator++(int){
+    		Iterator temp= *this;
     		++*this;
     		return temp;
     	}
@@ -97,13 +98,10 @@ public:
     	/* Iterator's dereferencing:
     	 * return:
     	 * T element which was pointed by the iterator.
-    	 * the function assumes the set iterator is not NULL.
-    	 * // what return if null TODO
+    	 * IMPORTANT: the function assumes the set iterator is not NULL.
+    	 * 		hence, iterator must be checked before dereferencing.
     	 */
-    	T operator* (){
-    	    if (node == NULL) {
-    		    // what return TODO
-    	    }
+    	const T operator* (){
     	    return *(node->data);
     	}
 
@@ -111,7 +109,7 @@ public:
     	 * @param iterator: a const reference iterator to compare to.
     	 * return: boolean value indicates whether the iterator were equal or not.
     	 */
-		bool operator==(const iterator& iterator){
+		bool operator==(const Iterator& iterator){
 			return iterator.node==node;
 		}
 
@@ -119,21 +117,104 @@ public:
 		 * @param iterator: a const reference iterator to compare to.
 		 * return: boolean value indicates whether the iterator were not equal.
 		 */
-		bool operator!=(const iterator& it){
-			return !(*this==iterator);
+		bool operator!=(const Iterator& it){
+			return !(*this==it);
 		}
 
     private:
     	Node<T>* node;
+
     	/* Iterator's constructor:
       	 * The function creates the iterator.
-    	 * @pram node: a node pointer which will be the first element.
+    	 * @param node: a node pointer which will be the first element.
     	 * if the node pointer is not provided than the set will be empty. //TODO check if is possible
     	 * return:
     	 * a new iterator object.
     	 */
-    	iterator(Node<T>* node = NULL) : node(node) {}
+    	Iterator(Node<T>* node = NULL) : node(node) {}
     };
+
+	/* Sets Iterator to the first element
+	 * return:
+	 *
+	 */
+    const Iterator begin();//TODO not sure about return value type
+
+	/* Sets Iterator to the end of set.
+	 * As a result, iterator doesn't point to valid element,
+	 * e.g. you can't dereference iterator after end().
+	 * return:
+	 *
+	 */
+    const Iterator end();
+
+	/* Searches the set for an item, that equals <element>.
+	 * If found - iterator will point to found item.
+	 * Otherwise, iterator will point to end().
+	 * return:
+	 *
+	 */
+    const Iterator find(const T& element);
+
+	/* Adds an element to set, if it wasn't contained in the set before.
+	 *
+	 * return:
+	 * true - if set did not contain <element> before (and it was added)
+	 * false - if set did contain <element> before. Set stays unchanged
+	 * 	in that case.
+	 */
+    bool insert(const T& element);
+
+	/* Removes an element from the set.
+	 *
+	 * return:
+	 * true - if <element> found and has been removed
+	 * false - if <element> has not been found
+	 */
+    bool remove(const T& element);
+
+	/*
+	 * return:
+	 * number of elements in set
+	 */
+    int size() const;
+
+	/*
+	 * return:
+	 * new SortedSet, containing an intersection of two sets.
+	 */
+    SortedSet operator&(const SortedSet) const;
+
+	/*
+	 * return:
+	 * new SortedSet, containing an union of two sets.
+	 */
+    SortedSet operator|(const SortedSet) const;
+
+	/* Creates new set, containing an elements, which are contained in first
+	 * set (left operand) but aren't contained in the second one (right operand)
+	 * e.g. A-B returns (in terms of math) A\B
+	 *
+	 * return:
+	 * new SortedSet, as described above
+	 */
+    SortedSet operator-(const SortedSet) const;
+
+	/* Creates new set, containing an elements, which are contained in one of
+	 * sets only.
+	 * e.g A^B returns (in terms of math) (A U B)\(A n B), where 'n' stands
+	 *  for intersection of A and B
+	 *
+	 * return:
+	 * new SortedSet, as described above
+	 */
+    SortedSet operator^(const SortedSet) const;//TODO probably should be implemented as (A|B)-(A&B)
+
+
+private:
+    int size;
+    Node head;
+    Iterator iterator;
 
 };
 
