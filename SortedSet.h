@@ -221,14 +221,39 @@ SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::end() const {
 }
 
 template<class T, class Compare>
-const typename SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::find(
+const SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::find(
 		const T& element) const {
-	return Iterator();//TEMP
+	auto i = begin(), last = end();
+	while (i != last && Compare()(*i, element)) {
+		++i;
+	}
+	//now i is null or larger or equal
+	if (i == last || Compare()(element, *i)) {//if i is null or larger than <element>
+		return last;
+	}
+	return i;
 }
 
 template<class T, class Compare>
 bool SortedSet<T, Compare>::insert(const T& element) {
-	return true; //TEMP
+	if (!first) {
+		first = new Node<T>(element);
+		first->next = nullptr;
+		return true;
+	}
+	auto i = begin(), end = this->end(), next=++i;
+	while (next != end && Compare()(*(next), element)) {
+		++i;
+		++next;
+	}
+	//i points to last valid item, that is lower or equal to <element>
+	if (Compare()(*i, element)) {//if i lower than <element>, insert after i
+		Node<T>* tmp = new Node<T>(element);
+		tmp->next = i.node->next;
+		i.node->next = tmp;
+		return true;
+	}
+	return false;
 }
 
 template<class T, class Compare>
