@@ -97,15 +97,6 @@ Apartment::SquareType** Apartment::joinLayoutsHorizontally(
 //******************************************************************************
 //*******************************Operators**************************************
 //******************************************************************************
-
-Apartment& Apartment::operator= (const Apartment& apartment){
-	Apartment::SquareType** temp=copyBoard(apartment.layout,apartment.length,apartment.width);
-	destroyBoard(layout,length);
-	length=apartment.length;
-	width=apartment.width;
-	price=apartment.price;
-	layout=temp;
-
 Apartment& Apartment::operator=(const Apartment& apartment) {
 	SquareType** temp = copyBoard(apartment.layout, apartment.length,
 			apartment.width);

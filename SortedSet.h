@@ -13,7 +13,8 @@ private:
 	T* data;
 	Node* next;
 
-	friend class SortedSet<T>;
+	template <class T, class Compare = std::less<T> >
+	friend class SortedSet<T,Compare>;
 	//constructor
 	Node(const T &element) : data(new T(element)), next(nullptr) {}
 	//copy constructor
@@ -37,9 +38,6 @@ private:
 // ****************************************************************************
 template <class T, class Compare = std::less<T> >
 class SortedSet {
-private:
-    Node<T>* first;
-
 public:
     class Iterator {
     public:
@@ -49,7 +47,7 @@ public:
     	 * a new iterator object.
     	 *
     	 */
-    	Iterator(const Iterator& iterator) : node(iterator.node) {}
+    	Iterator(const Iterator& iterator) : node(iterator.node) {}//TODO pointer to the same arg
 
     	/* Iterator assignment operator (=):
          * Get const reference of a iterator object, and copy it to this.
@@ -80,13 +78,8 @@ public:
     	 * return:
     	 * updating the iterator which the function was called on, to the next
     	 * iterator inside set.
-    	 * the function assumes the set iterator is not NULL.
+    	 * IMPORTANT: the function assumes the set iterator is not NULL.
     	 */
-
-  /* TODO check if is possible-> if the iterator was pointing to the last element (or set was empty) than
-   *  the operator return same element. check if null ,
-   *  Add appropriate code TODO -END
-   */
     	Iterator& operator++(){
     		node = node->next;
     		return *this;
@@ -122,27 +115,24 @@ public:
 		bool operator!=(const Iterator& iterator){
 			return !(*this==iterator);
 		}
-
     private:
     	Node<T>* node;
+    	friend class SortedSet<T>;
 
     	/* Iterator's constructor:
       	 * The function creates the iterator.
     	 * @param node: a node pointer which will be the first element.
-    	 * if the node pointer is not provided than the set will be empty. //TODO check if is possible
+    	 * if the node pointer is not provided than the set will be empty.
     	 * return:
     	 * a new iterator object.
     	 */
     	Iterator(Node<T>* node = nullptr) : node(node) {}
     };
-
-    SortedSet() : first(nullptr) {};
-
 	/* Sets Iterator to the first element
 	 * return:
 	 *
 	 */
-    const Iterator begin() const;//TODO not sure about return value type
+     Iterator begin() const;
 
 	/* Sets Iterator to the end of set.
 	 * As a result, iterator doesn't point to valid element,
@@ -150,7 +140,7 @@ public:
 	 * return:
 	 *
 	 */
-    const Iterator end() const;
+    Iterator end() const;
 
 	/* Searches the set for an item, that equals <element>.
 	 * If found - iterator will point to found item.
@@ -189,11 +179,6 @@ public:
 	 */
     SortedSet operator&(const SortedSet&) const;
 
-	/*
-	 * return:
-	 * new SortedSet, containing an union of two sets.
-	 */
-    SortedSet operator|(const SortedSet&) const;
 
 	/* Creates new set, containing an elements, which are contained in first
 	 * set (left operand) but aren't contained in the second one (right operand)
@@ -213,16 +198,26 @@ public:
 	 * new SortedSet, as described above
 	 */
     SortedSet operator^(const SortedSet&) const;//TODO probably should be implemented as (A|B)-(A&B)
+
+    ~SortedSet();
+    SortedSet(const SortedSet& set);
+    SortedSet& operator=(const SortedSet& set);
+
+
+private:
+    Node<T>* first;
+    Iterator iterator;
+    SortedSet();
 };
 
 template<class T, class Compare>
-const typename SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::begin() const {
-	return Iterator();//TEMP
+SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::begin() const {
+	return Iterator(first);
 }
 
 template<class T, class Compare>
-const typename SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::end() const {
-	return Iterator();//TEMP
+SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::end() const {
+	return Iterator();
 }
 
 template<class T, class Compare>
@@ -243,7 +238,11 @@ bool SortedSet<T, Compare>::remove(const T& element) {
 
 template<class T, class Compare>
 int SortedSet<T, Compare>::size() const {
-	return 0; //TEMP
+     int count=0;
+	 for(begin();iterator.node->next;iterator++){
+	 count++;
+  }
+  return count;
 }
 
 template<class T, class Compare>
@@ -251,9 +250,16 @@ SortedSet<T, Compare> SortedSet<T, Compare>::operator&(const SortedSet&) const {
 	return SortedSet();//TEMP
 }
 
+/*
+ * return:
+ * new SortedSet, containing an union of two sets.
+ */
 template<class T, class Compare>
-SortedSet<T, Compare> SortedSet<T, Compare>::operator|(const SortedSet&) const {
-	return SortedSet();//TEMP
+SortedSet<T, Compare> operator|(const SortedSet<T, Compare>& set1, const SortedSet<T, Compare>& set2 ){
+	int size1=set1.size();
+	int size2=set2.size();
+	SortedSet<T, Compare>& temp_set;
+	//for(int i=0; i<size1 && i<size2; i++)TODO
 }
 
 template<class T, class Compare>
@@ -266,5 +272,50 @@ SortedSet<T, Compare> SortedSet<T, Compare>::operator^(const SortedSet&) const {
 	return SortedSet();//TEMP
 } //TODO probably should be implemented as (A|B)-(A&B), maybe as non-member
 
+
+
+template<class T, class Compare>
+SortedSet<T, Compare> ::~SortedSet() {
+	Node<T>* current = first;
+	if (first == NULL) {
+		return;
+	}
+	while (! current->next) {
+		Node<T>* next = current->next;
+		delete current;
+		current = next;
+	}
+	delete current;
+	first=NULL;
+	return;
+}
+
+
+template<class T, class Compare>
+SortedSet<T, Compare> ::SortedSet():
+    first(nullptr), iterator(){
+}
+
+template<class T, class Compare>
+SortedSet<T, Compare> ::SortedSet(const SortedSet<T, Compare>& set){
+	if (set.first == nullptr) {
+		first = NULL;
+		return;
+	}
+	first = new Node<T> (*((set.first)->data));
+	Iterator<T> set_end = set.end();
+	if (iterator == set_end ) {
+		return;
+	}
+	while( iterator != set_end ) {
+		iterator++;
+		insert(*iterator);
+	}
+	return;
+}
+template<class T, class Compare>
+SortedSet<T, Compare>& SortedSet<T, Compare> ::operator=(const SortedSet& set){
+
+}
 
 #endif //MTM4_SORTEDSET_H
