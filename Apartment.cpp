@@ -1,5 +1,8 @@
 #include "Apartment.h"
-#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 //******************************************************************************
 //**********************Static functions of the Class***************************
@@ -61,8 +64,8 @@ bool Apartment::squareIsInBound(int row, int col) const {
 
 Apartment::SquareType** Apartment::joinLayoutsVertically(
 		const Apartment& apartment) const {
-	int new_length(getLength() + apartment.getLength());
-	int new_width(std::max(getWidth(), apartment.getWidth())); //TODO check if it's ok to use this max() function
+	int new_length(length + apartment.length);
+	int new_width(width > apartment.width ? width : apartment.width);
 	SquareType** new_layout = allocateBoard(new_length, new_width);
 	for (int i = 0; i < new_length; i++) {
 		for (int j = 0; j < new_width; j++) {
@@ -94,6 +97,7 @@ Apartment::SquareType** Apartment::joinLayoutsHorizontally(
 //******************************************************************************
 //*******************************Operators**************************************
 //******************************************************************************
+
 Apartment& Apartment::operator= (const Apartment& apartment){
 	Apartment::SquareType** temp=copyBoard(apartment.layout,apartment.length,apartment.width);
 	destroyBoard(layout,length);
@@ -101,19 +105,27 @@ Apartment& Apartment::operator= (const Apartment& apartment){
 	width=apartment.width;
 	price=apartment.price;
 	layout=temp;
+
+Apartment& Apartment::operator=(const Apartment& apartment) {
+	SquareType** temp = copyBoard(apartment.layout, apartment.length,
+			apartment.width);
+	destroyBoard(layout, length);
+	length = apartment.length;
+	width = apartment.width;
+	price = apartment.price;
+	layout = temp;
 	return *this;
 }
 
 Apartment& Apartment::operator+=(const Apartment& apartment) {
-	//TODO width and length are calculated in join... functions. May be considered code duplication
-	SquareType** joined = NULL;
-	int tmp_length = length; //TODO try to change it
+	SquareType** joined = nullptr;
+	int tmp_length = length;
 	if (length == apartment.length && width != apartment.length) {
 		joined = joinLayoutsVertically(apartment);
 		width += apartment.width;
 	} else {
 		joined = joinLayoutsHorizontally(apartment);
-		width = std::max(width, apartment.width);
+		width = width > apartment.width ? width : apartment.width;
 		length += apartment.length;
 	}
 	destroyBoard(layout, tmp_length);
@@ -124,7 +136,7 @@ Apartment& Apartment::operator+=(const Apartment& apartment) {
 
 const Apartment::SquareType& Apartment::operator()(int row, int col) const {
 	return const_cast<SquareType &>(static_cast<const SquareType &>((*this)(row,
-			col))); //TODO if we aren't allowed to use const_cast - just copy from non-const version
+			col)));
 }
 
 Apartment::SquareType& Apartment::operator()(int row, int col) {
@@ -155,23 +167,26 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 	return price_1 < price_2;
 }
 
+Apartment operator+(const Apartment& apartment_1,
+		const Apartment& apartment_2) {
+	return Apartment(apartment_1) += apartment_2;
+}
+
 //******************************************************************************
 //***************************C'tors, D'tor**************************************
 //******************************************************************************
 Apartment::Apartment(SquareType** squares, int length, int width, int price) :
-	length(length),
-	width(width),
-	price(price),
-	layout(copyBoard(squares,length,width)){
-	if(!(squares && length>0 && width>0 && price>=0)){
+		length(length), width(width), price(price), layout(
+				copyBoard(squares, length, width)) {
+	if (!(squares && length > 0 && width > 0 && price >= 0)) {
 		throw IllegalArgException();
 	}
 }
 
 Apartment::Apartment(const Apartment& apartment) :
-	    length(apartment.length), width(apartment.width),
-		price(apartment.price),
-		layout(copyBoard(apartment.layout, length, width)) {
+		length(apartment.length), width(apartment.width), price(
+				apartment.price), layout(
+				copyBoard(apartment.layout, length, width)) {
 }
 
 Apartment::~Apartment() {
