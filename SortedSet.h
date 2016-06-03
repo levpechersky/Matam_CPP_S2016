@@ -241,10 +241,9 @@ bool SortedSet<T, Compare>::insert(const T& element) {
 		first->next = nullptr;
 		return true;
 	}
-	auto i = begin(), end = this->end(), next=++i;
-	while (next != end && Compare()(*(next), element)) {
+	Iterator i = begin(), end = this->end();
+	while (i.node->next != end && Compare()(*(i.node->next), element)) {
 		++i;
-		++next;
 	}
 	//i points to last valid item, that is lower or equal to <element>
 	if (Compare()(*i, element)) {//if i lower than <element>, insert after i
