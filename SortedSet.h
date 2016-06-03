@@ -13,7 +13,7 @@ private:
 	T* data;
 	Node* next;
 
-	template <class T, class Compare = std::less<T> >
+	template <T, class Compare = std::less<T> >
 	friend class SortedSet<T,Compare>;
 	//constructor
 	Node(const T &element) : data(new T(element)), next(nullptr) {}
@@ -202,26 +202,26 @@ public:
     ~SortedSet();
     SortedSet(const SortedSet& set);
     SortedSet& operator=(const SortedSet& set);
+    SortedSet();
 
 
 private:
     Node<T>* first;
     Iterator iterator;
-    SortedSet();
 };
 
 template<class T, class Compare>
-SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::begin() const {
+typename SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::begin() const {
 	return Iterator(first);
 }
 
 template<class T, class Compare>
-SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::end() const {
+typename SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::end() const {
 	return Iterator();
 }
 
 template<class T, class Compare>
-const SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::find(
+const typename SortedSet<T, Compare>::Iterator SortedSet<T, Compare>::find(
 		const T& element) const {
 	auto i = begin(), last = end();
 	while (i != last && Compare()(*i, element)) {
@@ -241,9 +241,10 @@ bool SortedSet<T, Compare>::insert(const T& element) {
 		first->next = nullptr;
 		return true;
 	}
-	Iterator i = begin(), end = this->end();
-	while (i.node->next != end && Compare()(*(i.node->next), element)) {
+	Iterator i = begin(), end = this->end(), next=++i;
+	while (next != end && Compare()(*(next), element)) {
 		++i;
+		++next;
 	}
 	//i points to last valid item, that is lower or equal to <element>
 	if (Compare()(*i, element)) {//if i lower than <element>, insert after i
@@ -327,7 +328,7 @@ SortedSet<T, Compare> ::SortedSet(const SortedSet<T, Compare>& set){
 		return;
 	}
 	first = new Node<T> (*((set.first)->data));
-	Iterator<T> set_end = set.end();
+	Iterator set_end = set.end();
 	if (iterator == set_end ) {
 		return;
 	}
@@ -337,6 +338,7 @@ SortedSet<T, Compare> ::SortedSet(const SortedSet<T, Compare>& set){
 	}
 	return;
 }
+
 template<class T, class Compare>
 SortedSet<T, Compare>& SortedSet<T, Compare> ::operator=(const SortedSet& set){
 

@@ -125,15 +125,15 @@ bool testGetTotalArea() {
 	deleteSquares(board, length);
 	return true;
 }
-int main() {
-	RUN_TEST(apartmentTestExample);
-	RUN_TEST(testConstructor);
-	RUN_TEST(testCopyCtor);
-	RUN_TEST(testDtor);
-	RUN_TEST(testAssignOperator);
-	RUN_TEST(testGetPrice);
-	RUN_TEST(testGetLength);
-	RUN_TEST(testGetWidth);
-	RUN_TEST(testGetTotalArea);
-	return 0;
-}
+//int main() {
+//	RUN_TEST(apartmentTestExample);
+//	RUN_TEST(testConstructor);
+//	RUN_TEST(testCopyCtor);
+//	RUN_TEST(testDtor);
+//	RUN_TEST(testAssignOperator);
+//	RUN_TEST(testGetPrice);
+//	RUN_TEST(testGetLength);
+//	RUN_TEST(testGetWidth);
+//	RUN_TEST(testGetTotalArea);
+//	return 0;
+//}
