@@ -26,7 +26,7 @@ public:
 	//destructor
 	~Node() {
 		delete data;
-		delete this;
+		//delete this;
 	}
 	//assignment operator (=):
 	Node& operator=(const Node& node) {
@@ -216,7 +216,32 @@ public:
 	 * false - if <element> has not been found
 	 */
     bool remove(const T& element){
-    	return true;//TEMP
+		Iterator previous = begin(), end = Iterator();
+		if(previous == end){
+			return false;
+		}
+		iterator++;
+		if( !Compare()(*previous, element) && !Compare()(element, *previous)){//if <element> is the first item
+			first = iterator.node;
+			previous.node->next = nullptr;
+			delete previous.node;
+			previous.node = nullptr;
+			return true;
+		}
+		while (iterator != end && Compare()(*iterator, element)) {
+			++previous;
+			++iterator;
+		}
+		//iterator is NULL or greater or equal
+		//i is lower than <element>
+		if(iterator != end && !Compare()(element, *iterator)){//if iterator points to valid item, and that item is equal to <element>
+			previous.node->next = iterator.node->next;
+			iterator.node->next = nullptr;
+			delete iterator.node;
+			iterator.node = nullptr;
+			return true;
+		}
+    	return false;
     }
 
 	/*

@@ -22,7 +22,11 @@ int main(){
 	i = set.find(25);
 	i= set.find(10000);
 	i = set.find(-1);
-
+	set.remove(8);
+	set.remove(-1);
+	set.remove(1000);
+	set.remove(1);
+	set.remove(25);
 	return 0;
 }
 
