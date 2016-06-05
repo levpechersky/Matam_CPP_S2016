@@ -112,10 +112,10 @@ Apartment& Apartment::operator+=(const Apartment& apartment) {
 	SquareType** joined = nullptr;
 	int tmp_length = length;
 	if (length == apartment.length && width != apartment.length) {
-		joined = joinLayoutsVertically(apartment);
+		joined = joinLayoutsHorizontally(apartment);
 		width += apartment.width;
 	} else {
-		joined = joinLayoutsHorizontally(apartment);
+		joined = joinLayoutsVertically(apartment);
 		width = width > apartment.width ? width : apartment.width;
 		length += apartment.length;
 	}
@@ -126,8 +126,10 @@ Apartment& Apartment::operator+=(const Apartment& apartment) {
 }
 
 const Apartment::SquareType& Apartment::operator()(int row, int col) const {
-	return const_cast<SquareType &>(static_cast<const SquareType &>((*this)(row,
-			col)));
+	if (!squareIsInBound(row, col)) {
+		throw OutOfApartmentBoundsException();
+	}
+	return layout[row][col];
 }
 
 Apartment::SquareType& Apartment::operator()(int row, int col) {
@@ -146,7 +148,10 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 			return (ratio_1 < ratio_2);
 		}
 	} else if (area_1 == 0) {
-		//if area and price is 0: "0/0" is equal to anything - return false
+		//if area and price is 0: "0/0" is equal to anything except for infinity
+		if(price_1 == 0 && area_2 == 0 && price_2 != 0){
+			return true;//catch 0/0 < infinity case
+		}
 		//if area is 0 and price isn't: "x/0" considered infinity and ratio_1>ratio_2 - return false
 		return false;
 	} else if (area_2 == 0) {
@@ -167,11 +172,11 @@ Apartment operator+(const Apartment& apartment_1,
 //***************************C'tors, D'tor**************************************
 //******************************************************************************
 Apartment::Apartment(SquareType** squares, int length, int width, int price) :
-		length(length), width(width), price(price), layout(
-				copyBoard(squares, length, width)) {
+		length(length), width(width), price(price), layout(nullptr) {
 	if (!(squares && length > 0 && width > 0 && price >= 0)) {
 		throw IllegalArgException();
 	}
+	layout = copyBoard(squares, length, width);
 }
 
 Apartment::Apartment(const Apartment& apartment) :
