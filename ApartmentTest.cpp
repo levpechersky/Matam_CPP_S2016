@@ -47,27 +47,6 @@ static Apartment::SquareType** createSquaresWallsOnly(int length, int width) {
 	return squarePtr;
 }
 
-bool apartmentTestExample() {
-	const int length = 3;
-	const int width = 4;
-	const int price = 1;
-	Apartment::SquareType** squares = new Apartment::SquareType*[length];
-	for (int i = 0; i < length; ++i) {
-		squares[i] = new Apartment::SquareType[width];
-		for (int j = 0; j < width; ++j) {
-			squares[i][j] = Apartment::EMPTY;
-		}
-	}
-	ASSERT_NO_THROW(Apartment(squares, length, width, price));
-	const Apartment apt(squares, length, width, price);
-	ASSERT_EQUALS(length, apt.getLength());
-	Apartment apt2(apt);
-	ASSERT_NO_THROW(apt2 += apt);
-	ASSERT_EQUALS(true, apt < apt2);
-	deleteSquares(squares, length);
-	return true;
-}
-
 bool testConstructor() {
 	const int length = 3;
 	const int width = 4;
@@ -303,7 +282,7 @@ bool testOperatorLess() {
 }
 
 int main() {
-	RUN_TEST(apartmentTestExample);
+	//TODO before submitting change this to something other than main
 	RUN_TEST(testConstructor);
 	RUN_TEST(testCopyCtor);
 	RUN_TEST(testDtor);

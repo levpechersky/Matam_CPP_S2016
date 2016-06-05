@@ -143,23 +143,18 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 	int area_1(apartment_1.getTotalArea()), area_2(apartment_2.getTotalArea()),
 			price_1(apartment_1.getPrice()), price_2(apartment_2.getPrice());
 	if (area_1 != 0 && area_2 != 0) {
-		int ratio_1(price_1 * area_2), ratio_2(price_2 * area_1); // if areas aren't 0: p1/a1 < p2/a2 <=> p1*a2 < p2*a1. No FP numbers.
+		int ratio_1(price_1 * area_2), ratio_2(price_2 * area_1);
 		if (ratio_1 != ratio_2) {
 			return (ratio_1 < ratio_2);
 		}
 	} else if (area_1 == 0) {
-		//if area and price is 0: "0/0" is equal to anything except for infinity
-		if(price_1 == 0 && area_2 == 0 && price_2 != 0){
-			return true;//catch 0/0 < infinity case
+		if (price_1 == 0 && area_2 == 0 && price_2 != 0) {
+			return true;
 		}
-		//if area is 0 and price isn't: "x/0" considered infinity and ratio_1>ratio_2 - return false
 		return false;
 	} else if (area_2 == 0) {
-		//if area and price is 0: "0/0" is equal to anything - return false
-		//if area is 0 and price isn't: "x/0" considered infinity and ratio_1<ratio_2 - return true
 		return price_2 != 0;
 	}
-	//if ratios are equal, or both areas are 0 (e.g comapring two "infinities") - compare prices.
 	return price_1 < price_2;
 }
 
