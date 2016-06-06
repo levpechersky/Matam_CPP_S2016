@@ -44,6 +44,9 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.103783641.749290814" name="Apartment.cpp" rcbsApplicability="disable" resourcePath="Apartment.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.1653694106.676671482">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.1653694106.676671482" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.1653694106"/>
+					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

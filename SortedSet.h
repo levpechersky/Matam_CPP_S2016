@@ -6,6 +6,8 @@
 template<class T, class Compare = std::less<T> >
 class SortedSet;
 
+//template<class T, class Compare>
+//SortedSet<T,Compare> operator|(const SortedSet<T,Compare>& set1,const SortedSet<T,Compare>& set2);
 // ****************************************************************************
 // ***************************** node class ***********************************
 // ****************************************************************************
@@ -20,9 +22,9 @@ public:
 	//constructor
 	Node(const T &element) : data(new T(element)), next(nullptr) {}
 	//constructor
-	Node() : data(NULL), next(NULL) {}
+	Node() : data(nullptr), next(nullptr) {}
 	//copy constructor
-	Node(const Node& node) : data(new T(node.data)), next(node.next) {}
+	Node(const Node& node) : data(new T(node.data)), next(nullptr) {}
 	//destructor
 	~Node() {
 		delete data;
@@ -139,8 +141,7 @@ public:
 	 * 
 	 */
 	Iterator begin() {
-		iterator.node = first; //empty node first...
-		return iterator;
+		return Iterator(first);
 	}
 	
 	/* Sets Iterator to the end of set.
@@ -150,8 +151,7 @@ public:
 	 *
 	 */
 	Iterator end() {
-		for (begin(); iterator.node->data; iterator++);
-		return iterator;
+		return Iterator(nullptr);
 	}
 	
 	/* Searches the set for an item, that equals <element>.
@@ -161,16 +161,13 @@ public:
 	 *
 	 */
 	Iterator find(const T& element) {
-		Iterator end = Iterator();
-		begin();
-		while (iterator != end && Compare()(*iterator, element)) {
-			++iterator;
-		}
+		Iterator this_end = end(), this_first=begin();
+		for(;this_first != this_end && Compare()(*this_first, element);++this_first);
 		//now i is null or larger or equal
-		if (iterator == end || Compare()(element, *iterator)) { //if i is null or larger than <element>
-			return end;
+		if (this_first == this_end || Compare()(element, *this_first)) { //if i is null or larger than <element>
+			return this_end;
 		}
-		return iterator;
+		return this_first;
 	}
 	
 	/* Adds an element to set, if it wasn't contained in the set before.
@@ -185,26 +182,28 @@ public:
 	bool insert(const T& element) {
 		if (!first) { //Set empty - insert anyway
 			first = new Node<T>(element);
-			first->next = nullptr;
 			return true;
 		}
 		if (Compare()(element, *(first->data))) { //All items in set are greater than <element> - insert first
-			Node<T>* tmp = new Node<T>(element);
-			tmp->next = first;
-			first = tmp;
+			Node<T>* tmp = first;
+			first=new Node<T>(element);
+			first->next = tmp;
 			return true;
 		}
-		Iterator previous = begin(), end = Iterator();
-		iterator++;
-		while (iterator != end && Compare()(*iterator, element)) {
+		if(!Compare()( *(first->data), element)){
+			return false;
+		}
+		Iterator this_end = end(), previous=begin(),it=begin();
+		it++;
+		while (it != this_end && Compare()(*it, element)) {
 			++previous;
-			++iterator;
+			++it;
 		}
-		if (iterator == end || Compare()(element, *iterator)) { //if next is empty or greater than <element> - insert after previous
-			Node<T>* tmp = new Node<T>(element);
-			tmp->next = previous.node->next;
-			previous.node->next = tmp;
-			return true;
+		if((it == this_end || Compare()(element, *it))){
+		  Node<T>* tmp = new Node<T>(element);
+		  tmp->next = previous.node->next;
+		  previous.node->next = tmp;
+		  return true;
 		}
 		return false;
 	}
@@ -216,29 +215,29 @@ public:
 	 * false - if <element> has not been found
 	 */
     bool remove(const T& element){
-		Iterator previous = begin(), end = Iterator();
-		if(previous == end){
+    	Iterator this_end = end(), previous = begin(), it=begin();
+		if(previous == this_end){
 			return false;
 		}
-		iterator++;
+		it++;
 		if( !Compare()(*previous, element) && !Compare()(element, *previous)){//if <element> is the first item
-			first = iterator.node;
+			first = it.node;
 			previous.node->next = nullptr;
 			delete previous.node;
 			previous.node = nullptr;
 			return true;
 		}
-		while (iterator != end && Compare()(*iterator, element)) {
+		while (it != this_end && Compare()(*it, element)) {
 			++previous;
-			++iterator;
+			++it;
 		}
 		//iterator is NULL or greater or equal
 		//i is lower than <element>
-		if(iterator != end && !Compare()(element, *iterator)){//if iterator points to valid item, and that item is equal to <element>
-			previous.node->next = iterator.node->next;
-			iterator.node->next = nullptr;
-			delete iterator.node;
-			iterator.node = nullptr;
+		if(it != this_end && !Compare()(element, *it)){//if iterator points to valid item, and that item is equal to <element>
+			previous.node->next = it.node->next;
+			it.node->next = nullptr;
+			delete it.node;
+			it.node = nullptr;
 			return true;
 		}
     	return false;
@@ -248,15 +247,19 @@ public:
 	 * return:
 	 * number of elements in set
 	 */
-    int size() const{
-    	return 0;//TEMP
-    }
+	int size() {
+		int count=0;
+		for(Iterator this_end = end(), this_first=begin();this_first != this_end ;this_first++){
+			count++;
+		}
+		return count;
+	}
 
 	/*
 	 * return:
 	 * new SortedSet, containing an intersection of two sets.
 	 */
-    SortedSet operator&(const SortedSet&) const;
+    //SortedSet operator&(const SortedSet&) const;
 
 
 	/* Creates new set, containing an elements, which are contained in first
@@ -266,7 +269,7 @@ public:
 	 * return:
 	 * new SortedSet, as described above
 	 */
-    SortedSet operator-(const SortedSet&) const;
+    //SortedSet operator-(const SortedSet&) const;
 
 	/* Creates new set, containing an elements, which are contained in one of
 	 * sets only.
@@ -276,14 +279,14 @@ public:
 	 * return:
 	 * new SortedSet, as described above
 	 */
-    SortedSet operator^(const SortedSet&) const;//TODO probably should be implemented as (A|B)-(A&B)
+   // SortedSet operator^(const SortedSet&) const;//TODO probably should be implemented as (A|B)-(A&B)
 
 	/* SortedSet constructor.
 	 *
 	 * return:
 	 * new empty SortedSet
 	 */
-	SortedSet() : first(), iterator(first) {}
+	SortedSet() : first(nullptr){}
 
 	/* SortedSet destructor.
 	 */
@@ -294,53 +297,85 @@ public:
 	 * return:
 	 * new SortedSet, containing all members of <set>
 	 */
-	SortedSet(const SortedSet& set) : first(new Node<T>()), iterator() {
-		copyList(first, set.first);
-		if (set.iterator.node->data) {
-			begin();
-			return;
-		}
-		end();
-	}
+	SortedSet(const SortedSet& set) : first(copyList(set.first)){}
 
 	/* SortedSet assignment operator ( = ).
 	 */
 	SortedSet& operator=(const SortedSet& set) {
-		Node<T>* helper = new Node<T>();
-		copyList(helper, set.first);
+		Node<T>* helper = copyList(set.first);
 		removeList(first);
 		first = helper;
 		return *this;
 	}
 
+
 private:
 	Node<T>* first;
-	Iterator iterator;
-
 	/* Destroys Linked list */
 	static void removeList(Node<T>* first) {
-		if (first->next == nullptr) {
-			return;
-		}
-		Node<T>* helper = first->next;
+		Node<T>* helper = first;
 		while (helper) {
 			Node<T>* next = helper->next;
 			delete helper;
 			helper = next;
 		}
-		delete first;
+		first=nullptr;
 	}
 
 	/* Copies Linked List */
-	static void copyList(Node<T>* to_copy, Node<T>* copy) {
+	static Node<T>* copyList(Node<T>* to_copy) {
+		Node<T>* temp=new Node<T>(*(to_copy->data));
+		Node<T>* helper2 = temp;
 		Node<T>* helper1 = to_copy->next;
-		Node<T>* helper2 = copy->next;
 		while (helper1) {
-			helper2 = new Node<T>(helper1->data);
+			helper2->next=new Node<T>(*(helper1->data));
 			helper2 = helper2->next;
-			helper1->next;
+			helper1=helper1->next;
 		}
+		return temp;
 	}
 };
+template<class T, class Compare>
+SortedSet<T,Compare> operator|(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+	SortedSet<T,Compare> copy(set1);
+	auto this_end = set2.end(), it=set2.begin();
+	for(;it != this_end ;it++){
+		copy.insert(*it);
+	}
+	return copy;
+}
+
+template<class T, class Compare>
+SortedSet<T,Compare> operator&(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+	SortedSet<T,Compare> copy(set1);
+	SortedSet<T,Compare> to_return;
+	auto this_end = set2.end(), it=set2.begin();
+	for(;it != this_end ;it++){
+		if(!copy.insert(*it)){
+			to_return.insert(*it);
+		}
+	}
+	return to_return;
+}
+
+template<class T, class Compare>
+SortedSet<T,Compare> operator-(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+	SortedSet<T,Compare> copy(set2);
+	SortedSet<T,Compare> to_return;
+	auto this_end = set1.end(), it=set1.begin();
+	for(;it != this_end ;it++){
+		if(copy.insert(*it)){
+			to_return.insert(*it);
+		}
+	}
+	return to_return;
+}
+
+template<class T, class Compare>
+SortedSet<T,Compare> operator^(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+	SortedSet<T,Compare> temp_set1=set1-set2;
+	SortedSet<T,Compare> temp_set2=set2-set1;
+	return temp_set1 | temp_set2;
+}
 
 #endif //MTM4_SORTEDSET_H
