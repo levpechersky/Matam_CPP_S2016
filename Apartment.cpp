@@ -1,8 +1,4 @@
 #include "Apartment.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
 
 //******************************************************************************
 //**********************Static functions of the Class***************************

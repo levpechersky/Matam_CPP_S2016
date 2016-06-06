@@ -91,21 +91,21 @@ public:
 	 * return:
 	 * 	apartment price.
 	 */
-	int getPrice() const;
+	inline int getPrice() const;
 
 	/* getLength return apartment length.
 	 *
 	 * return:
 	 * 	apartment length.
 	 */
-	int getLength() const;
+	inline int getLength() const;
 
 	/* getWidth return apartment width.
 	 *
 	 * return:
 	 * 	apartment width.
 	 */
-	int getWidth() const;
+	inline int getWidth() const;
 
 private:
 	int length, width, price;
@@ -153,7 +153,7 @@ private:
 	 * 	true if coordinates are legal
 	 * 	else otherwise
 	 */
-	bool squareIsInBound(int row, int col) const;
+	inline bool squareIsInBound(int row, int col) const;
 
 	/* Creates new allocated layout, which consists of two apartments' layouts.
 	 * apartment will be appended to the bottom of this' layout.
