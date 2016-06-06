@@ -20,6 +20,10 @@ Apartment::SquareType** Apartment::copyBoard(Apartment::SquareType**squares,
 	SquareType**layout = allocateBoard(length, width);
 	for (int i = 0; i < length; i++) {
 		for (int j = 0; j < width; j++) {
+			if(squares[i][j]>=NUM_SQUARE_TYPES){
+				destroyBoard(layout,length);
+				throw IllegalArgException();
+			}
 			layout[i][j] = squares[i][j];
 		}
 	}

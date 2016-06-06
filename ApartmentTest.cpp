@@ -25,11 +25,13 @@ static Apartment::SquareType** createSquaresEmpty(int length, int width) {
 	return layout;
 }
 
-static Apartment::SquareType** createSquaresTilesPattern(int length, int width, int tile_length, int tile_width) {
+static Apartment::SquareType** createSquaresTilesPattern(int length, int width,
+		int tile_length, int tile_width) {
 	Apartment::SquareType** squarePtr = createSquaresEmpty(length, width);
 	for (int i = 0; i < length; i++) {
 		for (int j = 0; j < width; j++) {
-			if (j % tile_width == 0 || i % tile_length == 0) { //tiles pattern, with rooms of 4x3
+			if (j % tile_width == 0 || i % tile_length == 0) {
+				//tiles pattern, with rooms of 4x3
 				squarePtr[i][j] = Apartment::WALL;
 			}
 		}
@@ -52,17 +54,26 @@ bool testConstructor() {
 	const int width = 4;
 	const int price = 1;
 	Apartment::SquareType** board = createSquaresEmpty(length, width);
-	//TODO if width and length don't correspond to real <squares> size - everyting will crash, but it can't be prevented
-	ASSERT_THROW(Apartment::IllegalArgException, Apartment(nullptr, length, width, price));
-	ASSERT_THROW(Apartment::IllegalArgException, Apartment(board, length, width, -1));
-	ASSERT_THROW(Apartment::IllegalArgException, Apartment(board, length, 0, price));
-	ASSERT_THROW(Apartment::IllegalArgException, Apartment(board, 0, width, price));
-	ASSERT_THROW(Apartment::IllegalArgException, Apartment(board, length, -1, price));
-	ASSERT_THROW(Apartment::IllegalArgException, Apartment(board, -1, width, price));
-	//TODO do we need to check if squares contain only WALL and EMPTY?
+	Apartment::SquareType** illegal_board = createSquaresEmpty(1,1);
+	illegal_board[0][0] = Apartment::NUM_SQUARE_TYPES;
+	ASSERT_THROW(Apartment::IllegalArgException,
+			Apartment(nullptr, length, width, price));
+	ASSERT_THROW(Apartment::IllegalArgException,
+			Apartment(board, length, width, -1));
+	ASSERT_THROW(Apartment::IllegalArgException,
+			Apartment(board, length, 0, price));
+	ASSERT_THROW(Apartment::IllegalArgException,
+			Apartment(board, 0, width, price));
+	ASSERT_THROW(Apartment::IllegalArgException,
+			Apartment(board, length, -1, price));
+	ASSERT_THROW(Apartment::IllegalArgException,
+			Apartment(board, -1, width, price));
+	ASSERT_THROW(Apartment::IllegalArgException,
+				Apartment(illegal_board, 1, 1, price));
 	ASSERT_NO_THROW(Apartment(board, length, width, 0));
 	ASSERT_NO_THROW(Apartment(board, length, width, price));
 	deleteSquares(board, length);
+	deleteSquares(illegal_board,1);
 	return true;
 }
 
@@ -70,7 +81,8 @@ bool testCopyCtor() {
 	const int length = 13;
 	const int width = 7;
 	const int price = 1234567;
-	Apartment::SquareType** board = createSquaresTilesPattern(length, width, 5, 4);
+	Apartment::SquareType** board =
+			createSquaresTilesPattern(length, width, 5, 4);
 	/* Apartment of blocks 5*4:
 	 *  weee...
 	 * 	weee...
@@ -91,23 +103,14 @@ bool testCopyCtor() {
 	return true;
 }
 
-bool testDtor() {
-	const int length = 3;
-	const int width = 4;
-	//TODO do we have anything to test here?
-	Apartment::SquareType** board = createSquaresEmpty(length, width);
-	//const int price = 1;
-	deleteSquares(board, length);
-
-	return true;
-}
-
 bool testAssignOperator() {
 	const int length = 3;
 	const int width = 4;
 	const int price = 1;
-	Apartment::SquareType** board = createSquaresTilesPattern(length, width, 5, 4);
-	Apartment::SquareType** empty_board = createSquaresEmpty(2 * length, 2 * width);
+	Apartment::SquareType** board =
+			createSquaresTilesPattern(length, width, 5, 4);
+	Apartment::SquareType** empty_board =
+			createSquaresEmpty(2 * length, 2 * width);
 	Apartment::SquareType** walls_board = createSquaresWallsOnly(length, width);
 	Apartment tiled(board, length, width, price),
 			empty(empty_board, 2 * length, 2 * width, price),
@@ -124,7 +127,7 @@ bool testAssignOperator() {
 	ASSERT_EQUALS(walls.getWidth(), empty.getWidth());
 	ASSERT_EQUALS(walls.getPrice(), empty.getPrice());
 	deleteSquares(board, length);
-	deleteSquares(empty_board, length);
+	deleteSquares(empty_board, 2*length);
 	deleteSquares(walls_board, length);
 	return true;
 }
@@ -185,19 +188,23 @@ bool testOperatorAddAssign() {
 	Apartment::SquareType** board3x3 = createSquaresEmpty(3, 3);
 	const Apartment apartment3x3(board3x3, 3, 3, price);
 	Apartment tmp(apartment3x3);
-	ASSERT_NO_THROW(tmp+=tmp);//same object, same length and width. result - apartment 6x3
+	ASSERT_NO_THROW(tmp+=tmp);
+	//same object, same length and width. result - apartment 6x3
 	ASSERT_EQUALS(6, tmp.getLength());
 	ASSERT_EQUALS(3, tmp.getWidth());
-	ASSERT_NO_THROW(tmp+=apartment3x3);//same width, different length. result - apartment 9x3
+	ASSERT_NO_THROW(tmp+=apartment3x3);
+	//same width, different length. result - apartment 9x3
 	ASSERT_EQUALS(3*apartment3x3.getTotalArea(), tmp.getTotalArea());
 	ASSERT_EQUALS(3*apartment3x3.getPrice(), tmp.getPrice());//prices added
 	Apartment::SquareType** board9x5 = createSquaresEmpty(9, 5);
 	const Apartment apartment9x5(board9x5, 9, 5, price);
-	ASSERT_NO_THROW(tmp+=apartment9x5);//same length, different width. result - apartment 9x8
+	ASSERT_NO_THROW(tmp+=apartment9x5);
+	//same length, different width. result - apartment 9x8
 	ASSERT_EQUALS(9, tmp.getLength());
 	ASSERT_EQUALS(8, tmp.getWidth());
 	ASSERT_EQUALS(9*8, tmp.getTotalArea());//apartment was all empty
-	ASSERT_NO_THROW(tmp+=apartment3x3);//9x8 + 3x3 = 12x8, all dimensions are different
+	ASSERT_NO_THROW(tmp+=apartment3x3);
+	//9x8 + 3x3 = 12x8, all dimensions are different
 	ASSERT_EQUALS(12, tmp.getLength());
 	ASSERT_EQUALS(8, tmp.getWidth());
 	ASSERT_EQUALS(9*8+3*3, tmp.getTotalArea());
@@ -213,7 +220,8 @@ bool testOperatorFunctor() {
 	const int length = 4;
 	const int width = 4;
 	const int price = 1;
-	Apartment::SquareType** board = createSquaresTilesPattern(length, width, 2, 2);
+	Apartment::SquareType** board =
+			createSquaresTilesPattern(length, width, 2, 2);
 	/* wwww
 	 * wewe
 	 * wwww
@@ -248,7 +256,7 @@ bool testOperatorAdd() {
 	ASSERT_EQUALS(Apartment::EMPTY, joined(2,3));
 	ASSERT_EQUALS(Apartment::WALL, joined(3,3));
 	deleteSquares(board, length);
-	deleteSquares(board_2, length);
+	deleteSquares(board_2, width);
 	return true;
 }
 
@@ -257,7 +265,8 @@ bool testOperatorLess() {
 	const int width = 3;
 	Apartment::SquareType** board = createSquaresEmpty(length, width);//area 9
 	Apartment::SquareType** walls_board = createSquaresWallsOnly(length, width);//area 0
-	Apartment::SquareType** tiles_board = createSquaresTilesPattern(length,width,length,width);//area 4
+	Apartment::SquareType** tiles_board =
+			createSquaresTilesPattern(length,width,length,width);//area 4
 	const Apartment apartment_00(walls_board, length, width, 0);// "0/0" ratio
 	const Apartment apartment_inf_1(walls_board, length, width, 5);// "infinite" ratio
 	const Apartment apartment_inf_2(walls_board, length, width, 100);// larger "infinite" ratio
@@ -281,11 +290,9 @@ bool testOperatorLess() {
 	return true;
 }
 
-int main() {
-	//TODO before submitting change this to something other than main
+bool apartmentTest() {
 	RUN_TEST(testConstructor);
 	RUN_TEST(testCopyCtor);
-	RUN_TEST(testDtor);
 	RUN_TEST(testAssignOperator);
 	RUN_TEST(testGetPrice);
 	RUN_TEST(testGetLength);
@@ -295,5 +302,5 @@ int main() {
 	RUN_TEST(testOperatorFunctor);
 	RUN_TEST(testOperatorAdd);
 	RUN_TEST(testOperatorLess);
-	return 0;
+	return true;
 }

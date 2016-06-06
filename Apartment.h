@@ -199,7 +199,7 @@ Apartment operator+(const Apartment& apartment_1, const Apartment& apartment_2);
  * getTotalArea description.
  * In case area is 0, ratio considered infinity, unless the price is also zero.
  * In that case ratio "0/0" is considered equal to any other value.
- * In case two apartments have an infinite or same ratio - an apartment with
+ * In case two apartments same ratio - an apartment with
  * lower price is considered smaller.
  *
  * return:
