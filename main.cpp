@@ -2,8 +2,7 @@
 #include "SortedSet.h"
 using namespace std;
 
-//int main(){
-//	cout << "Hello world!" << endl;
+int main(){
 //	SortedSet<int> set;
 //	set.insert(5);
 //	set.insert(5);
@@ -28,6 +27,6 @@ using namespace std;
 //	set.remove(1000);
 //	set.remove(1);
 //	set.remove(25);
-//	return 0;
-//}
-//
+	return 0;
+}
+

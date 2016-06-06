@@ -229,7 +229,7 @@ bool testOperatorFunctor() {
 	Apartment apartment(board, length, width, price);
 	ASSERT_THROW(Apartment::OutOfApartmentBoundsException, apartment(-1, 0));
 	ASSERT_THROW(Apartment::OutOfApartmentBoundsException, apartment(0, -1));
-	ASSERT_THROW(Apartment::OutOfApartmentBoundsException, apartment(length, 0));
+	ASSERT_THROW(Apartment::OutOfApartmentBoundsException, apartment(length,0));
 	ASSERT_THROW(Apartment::OutOfApartmentBoundsException, apartment(0, width));
 	ASSERT_EQUALS(Apartment::EMPTY, apartment(1, 1));
 	ASSERT_NO_THROW(apartment(0, 0) = Apartment::EMPTY);
@@ -264,15 +264,15 @@ bool testOperatorLess() {
 	const int length = 3;
 	const int width = 3;
 	Apartment::SquareType** board = createSquaresEmpty(length, width);//area 9
-	Apartment::SquareType** walls_board = createSquaresWallsOnly(length, width);//area 0
+	Apartment::SquareType** walls_board = createSquaresWallsOnly(length, width);
 	Apartment::SquareType** tiles_board =
 			createSquaresTilesPattern(length,width,length,width);//area 4
-	const Apartment apartment_00(walls_board, length, width, 0);// "0/0" ratio
-	const Apartment apartment_inf_1(walls_board, length, width, 5);// "infinite" ratio
-	const Apartment apartment_inf_2(walls_board, length, width, 100);// larger "infinite" ratio
-	const Apartment apartment_9x100(board, length, width, 900);// ratio: 100 per meter
-	const Apartment apartment_4x100(tiles_board, length, width, 400);// ratio: 100 per meter
-	const Apartment apartment_4x200(tiles_board, length, width, 800);// ratio: 200 per meter
+	const Apartment apartment_00(walls_board, length, width, 0),// "0/0" ratio
+	 apartment_inf_1(walls_board, length, width, 5),//"infinite" ratio
+	 apartment_inf_2(walls_board, length, width, 100),// larger "infinite" ratio
+	 apartment_9x100(board, length, width, 900),// ratio: 100 per meter
+	 apartment_4x100(tiles_board, length, width, 400),// ratio: 100 per meter
+	 apartment_4x200(tiles_board, length, width, 800);// ratio: 200 per meter
 	ASSERT_EQUALS(false, apartment_00 < apartment_00);
 	ASSERT_EQUALS(true,  apartment_00 < apartment_inf_1);
 	ASSERT_EQUALS(false, apartment_00 < apartment_9x100);
@@ -283,7 +283,7 @@ bool testOperatorLess() {
 	ASSERT_EQUALS(false, apartment_9x100 < apartment_00);
 	ASSERT_EQUALS(true,  apartment_9x100 < apartment_inf_1);
 	ASSERT_EQUALS(true, apartment_9x100 < apartment_4x200);//regular case
-	ASSERT_EQUALS(true, apartment_4x100 < apartment_9x100);//same ratio, comparing by price
+	ASSERT_EQUALS(true, apartment_4x100 < apartment_9x100);//same ratio
 	deleteSquares(board, length);
 	deleteSquares(walls_board, length);
 	deleteSquares(tiles_board, length);

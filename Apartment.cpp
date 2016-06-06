@@ -46,18 +46,6 @@ int Apartment::getTotalArea() const {
 	return area;
 }
 
-int Apartment::getPrice() const {
-	return price;
-}
-
-int Apartment::getLength() const {
-	return length;
-}
-
-int Apartment::getWidth() const {
-	return width;
-}
-
 bool Apartment::squareIsInBound(int row, int col) const {
 	return row >= 0 && row < length && col >= 0 && col < width;
 }

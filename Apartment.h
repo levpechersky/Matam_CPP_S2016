@@ -76,7 +76,7 @@ public:
 	 * 	reference to tile in row <row> and column <col>.
 	 */
 	const SquareType& operator() (int row, int col) const;
-	SquareType& operator() (int row, int col);
+		  SquareType& operator() (int row, int col);
 
 /*****************Other methods************************************************/
 	/* getTotalArea return the number of empty squares in board apartment.
@@ -91,21 +91,21 @@ public:
 	 * return:
 	 * 	apartment price.
 	 */
-	inline int getPrice() const;
+	int getPrice() const { return price; };
 
 	/* getLength return apartment length.
 	 *
 	 * return:
 	 * 	apartment length.
 	 */
-	inline int getLength() const;
+	int getLength() const  { return length; };
 
 	/* getWidth return apartment width.
 	 *
 	 * return:
 	 * 	apartment width.
 	 */
-	inline int getWidth() const;
+	int getWidth() const  { return width; };
 
 private:
 	int length, width, price;
@@ -153,7 +153,7 @@ private:
 	 * 	true if coordinates are legal
 	 * 	else otherwise
 	 */
-	inline bool squareIsInBound(int row, int col) const;
+	bool squareIsInBound(int row, int col) const;
 
 	/* Creates new allocated layout, which consists of two apartments' layouts.
 	 * apartment will be appended to the bottom of this' layout.
