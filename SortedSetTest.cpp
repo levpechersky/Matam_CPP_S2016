@@ -424,6 +424,11 @@ bool testComboTest(){
 	S1 = B ^ A;
 	S2 = A ^ B;
 	ASSERT_EQUALS(S1, S2);
+	// 5. A n (B ^ C) = (A n B)^(A n C)
+	S1 = A & (B ^ C);
+	S2 = (A & B) ^ (A & C);
+	ASSERT_EQUALS(S1, S2);
+
 	return true;
 }
 

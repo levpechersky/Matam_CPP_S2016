@@ -387,7 +387,7 @@ SortedSet<T, Compare>& operator-=(SortedSet<T, Compare>& set1,
  * new SortedSet, as described above
  */
 template<class T, class Compare>
-SortedSet<T,Compare> operator^(SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
+SortedSet<T,Compare> operator^(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> temp_set1=set1-set2;
 	SortedSet<T,Compare> temp_set2=set2-set1;
 	return temp_set1 | temp_set2;
