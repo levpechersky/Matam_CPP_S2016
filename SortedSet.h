@@ -28,7 +28,6 @@ public:
 	//destructor
 	~Node() {
 		delete data;
-		//delete this;
 	}
 	//assignment operator (=):
 	Node& operator=(const Node& node) {
@@ -140,7 +139,7 @@ public:
 	 * return:
 	 * 
 	 */
-	Iterator begin() {
+	Iterator begin() const {
 		return Iterator(first);
 	}
 	
@@ -150,8 +149,8 @@ public:
 	 * return:
 	 *
 	 */
-	Iterator end() {
-		return Iterator(nullptr);
+	Iterator end() const {
+		return Iterator();
 	}
 	
 	/* Searches the set for an item, that equals <element>.
@@ -160,7 +159,7 @@ public:
 	 * return:
 	 *
 	 */
-	Iterator find(const T& element) {
+	Iterator find(const T& element) const {
 		Iterator this_end = end(), this_first=begin();
 		for(;this_first != this_end && Compare()(*this_first, element);++this_first);
 		//now i is null or larger or equal
@@ -193,8 +192,8 @@ public:
 		if(!Compare()( *(first->data), element)){
 			return false;
 		}
-		Iterator this_end = end(), previous=begin(),it=begin();
-		it++;
+		Iterator this_end = end(), previous = begin(), it = begin();
+		++it;
 		while (it != this_end && Compare()(*it, element)) {
 			++previous;
 			++it;
@@ -219,25 +218,19 @@ public:
 		if(previous == this_end){
 			return false;
 		}
-		it++;
-		if( !Compare()(*previous, element) && !Compare()(element, *previous)){//if <element> is the first item
+		++it;
+		if( !Compare()(*previous, element) && !Compare()(element, *previous)){
 			first = it.node;
-			previous.node->next = nullptr;
 			delete previous.node;
-			previous.node = nullptr;
 			return true;
 		}
 		while (it != this_end && Compare()(*it, element)) {
 			++previous;
 			++it;
 		}
-		//iterator is NULL or greater or equal
-		//i is lower than <element>
-		if(it != this_end && !Compare()(element, *it)){//if iterator points to valid item, and that item is equal to <element>
+		if(it != this_end && !Compare()(element, *it)){
 			previous.node->next = it.node->next;
-			it.node->next = nullptr;
 			delete it.node;
-			it.node = nullptr;
 			return true;
 		}
     	return false;
@@ -247,9 +240,9 @@ public:
 	 * return:
 	 * number of elements in set
 	 */
-	int size() {
+	int size() const {
 		int count=0;
-		for(Iterator this_end = end(), this_first=begin();this_first != this_end ;this_first++){
+		for(Iterator this_end = end(), this_first=begin();this_first != this_end ;++this_first){
 			count++;
 		}
 		return count;
@@ -335,8 +328,9 @@ private:
 		return temp;
 	}
 };
+
 template<class T, class Compare>
-SortedSet<T,Compare> operator|(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+SortedSet<T,Compare> operator|(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> copy(set1);
 	auto this_end = set2.end(), it=set2.begin();
 	for(;it != this_end ;it++){
@@ -346,7 +340,7 @@ SortedSet<T,Compare> operator|(SortedSet<T,Compare>& set1, SortedSet<T,Compare>&
 }
 
 template<class T, class Compare>
-SortedSet<T,Compare> operator&(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+SortedSet<T,Compare> operator&(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> copy(set1);
 	SortedSet<T,Compare> to_return;
 	auto this_end = set2.end(), it=set2.begin();
@@ -359,7 +353,7 @@ SortedSet<T,Compare> operator&(SortedSet<T,Compare>& set1, SortedSet<T,Compare>&
 }
 
 template<class T, class Compare>
-SortedSet<T,Compare> operator-(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+SortedSet<T,Compare> operator-(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> copy(set2);
 	SortedSet<T,Compare> to_return;
 	auto this_end = set1.end(), it=set1.begin();
@@ -372,7 +366,7 @@ SortedSet<T,Compare> operator-(SortedSet<T,Compare>& set1, SortedSet<T,Compare>&
 }
 
 template<class T, class Compare>
-SortedSet<T,Compare> operator^(SortedSet<T,Compare>& set1, SortedSet<T,Compare>& set2){
+SortedSet<T,Compare> operator^(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> temp_set1=set1-set2;
 	SortedSet<T,Compare> temp_set2=set2-set1;
 	return temp_set1 | temp_set2;
