@@ -68,9 +68,9 @@ public:
 		/* Iterator's destructor:
     	 * The function deletes the iterator.
     	 */
-    	~Iterator() {
-    		node=nullptr;
-    	}
+		~Iterator() {
+			node = nullptr;
+		}
 
        /**************Operators of iterator******************************/
 
@@ -85,15 +85,15 @@ public:
     	 * iterator inside set.
     	 * IMPORTANT: the function assumes the set iterator is not NULL.
     	 */
-    	Iterator& operator++(){
-    		node = node->next;
-    		return *this;
-    	}
-    	Iterator operator++(int){
-    		Iterator temp= *this;
-    		++*this;
-    		return temp;
-    	}
+		Iterator& operator++() {
+			node = node->next;
+			return *this;
+		}
+		Iterator operator++(int) {
+			Iterator temp = *this;
+			++*this;
+			return temp;
+		}
 
     	/* Iterator's dereferencing:
     	 * return:
@@ -101,24 +101,24 @@ public:
     	 * IMPORTANT: the function assumes the set iterator is not NULL.
     	 * 		hence, iterator must be checked before dereferencing.
     	 */
-    	const T operator* (){
-    	    return *(node->data);
-    	}
+		const T operator*() {
+			return *(node->data);
+		}
 
     	/* Iterator comparison operator (==):
     	 * @param iterator: a const reference iterator to compare to.
     	 * return: boolean value indicates whether the iterator were equal or not.
     	 */
-		bool operator==(const Iterator& iterator){
-			return iterator.node==node;
+		bool operator==(const Iterator& iterator) {
+			return iterator.node == node;
 		}
 
 		/* Iterator non equal operator (!=):
 		 * @param iterator: a const reference iterator to compare to.
 		 * return: boolean value indicates whether the iterator were not equal.
 		 */
-		bool operator!=(const Iterator& iterator){
-			return !(*this==iterator);
+		bool operator!=(const Iterator& iterator) {
+			return !(*this == iterator);
 		}
 
 		/* Iterator constructor:
@@ -135,7 +135,8 @@ public:
 	
 	/* Sets Iterator to the first element
 	 * return:
-	 * 
+	 *  Iterator pointing to the first element, or if set is empty -
+	 *  	to the end of set
 	 */
 	Iterator begin() const {
 		return Iterator(first);
@@ -145,7 +146,7 @@ public:
 	 * As a result, iterator doesn't point to valid element,
 	 * e.g. you can't dereference iterator after end().
 	 * return:
-	 *
+	 *  Iterator pointing to the end of set.
 	 */
 	Iterator end() const {
 		return Iterator();
@@ -155,16 +156,16 @@ public:
 	 * If found - iterator will point to found item.
 	 * Otherwise, iterator will point to end().
 	 * return:
-	 *
+	 *  Iterator pointing to the <element>, if <element> found
+	 *  Iterator pointing to the end of set if <element> not found
 	 */
 	Iterator find(const T& element) const {
-		Iterator this_end = end(), this_first=begin();
-		for(;this_first != this_end && Compare()(*this_first, element);++this_first);
-		//now i is null or larger or equal
-		if (this_first == this_end || Compare()(element, *this_first)) { //if i is null or larger than <element>
+		Iterator this_end = end(), current=begin();
+		for(; current != this_end && Compare()(*current, element); ++current);
+		if (current == this_end || Compare()(element, *current)) {
 			return this_end;
 		}
-		return this_first;
+		return current;
 	}
 	
 	/* Adds an element to set, if it wasn't contained in the set before.
@@ -239,8 +240,9 @@ public:
 	 * number of elements in set
 	 */
 	int size() const {
-		int count=0;
-		for(Iterator this_end = end(), this_first=begin();this_first != this_end ;++this_first){
+		int count = 0;
+		for(Iterator this_end = end(), current=begin();current != this_end;
+				++current){
 			count++;
 		}
 		return count;
@@ -284,18 +286,18 @@ private:
 			delete helper;
 			helper = next;
 		}
-		first=nullptr;
+		first = nullptr;
 	}
 
 	/* Copies Linked List */
 	static Node<T>* copyList(Node<T>* to_copy) {
-		Node<T>* temp=new Node<T>(*(to_copy->data));
+		Node<T>* temp = new Node<T>(*(to_copy->data));
 		Node<T>* helper2 = temp;
 		Node<T>* helper1 = to_copy->next;
 		while (helper1) {
-			helper2->next=new Node<T>(*(helper1->data));
+			helper2->next = new Node<T>(*(helper1->data));
 			helper2 = helper2->next;
-			helper1=helper1->next;
+			helper1 = helper1->next;
 		}
 		return temp;
 	}
@@ -308,10 +310,11 @@ private:
  * new SortedSet, containing union of two sets.
  */
 template<class T, class Compare>
-SortedSet<T,Compare> operator|(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
-	SortedSet<T,Compare> copy(set1);
-	auto this_end = set2.end(), it=set2.begin();
-	for(;it != this_end ;it++){
+SortedSet<T, Compare> operator|(const SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	SortedSet<T, Compare> copy(set1);
+	auto this_end = set2.end(), it = set2.begin();
+	for (; it != this_end; it++) {
 		copy.insert(*it);
 	}
 	return copy;
@@ -332,12 +335,12 @@ SortedSet<T, Compare>& operator|=(SortedSet<T, Compare>& set1,
  * new SortedSet, containing an intersection of two sets.
  */
 template<class T, class Compare>
-SortedSet<T,Compare> operator&(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
-	SortedSet<T,Compare> copy(set1);
-	SortedSet<T,Compare> to_return;
-	auto this_end = set2.end(), it=set2.begin();
-	for(;it != this_end ;it++){
-		if(!copy.insert(*it)){
+SortedSet<T, Compare> operator&(const SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	SortedSet<T, Compare> copy(set1), to_return;
+	auto this_end = set2.end(), it = set2.begin();
+	for (; it != this_end; it++) {
+		if (!copy.insert(*it)) {
 			to_return.insert(*it);
 		}
 	}
@@ -359,12 +362,12 @@ SortedSet<T, Compare>& operator&=(SortedSet<T, Compare>& set1,
  * new SortedSet, as described above
  */
 template<class T, class Compare>
-SortedSet<T,Compare> operator-(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
-	SortedSet<T,Compare> copy(set2);
-	SortedSet<T,Compare> to_return;
-	auto this_end = set1.end(), it=set1.begin();
-	for(;it != this_end ;it++){
-		if(copy.insert(*it)){
+SortedSet<T, Compare> operator-(const SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	SortedSet<T, Compare> copy(set2), to_return;
+	auto this_end = set1.end(), it = set1.begin();
+	for (; it != this_end; it++) {
+		if (copy.insert(*it)) {
 			to_return.insert(*it);
 		}
 	}
@@ -387,10 +390,9 @@ SortedSet<T, Compare>& operator-=(SortedSet<T, Compare>& set1,
  * new SortedSet, as described above
  */
 template<class T, class Compare>
-SortedSet<T,Compare> operator^(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
-	SortedSet<T,Compare> temp_set1=set1-set2;
-	SortedSet<T,Compare> temp_set2=set2-set1;
-	return temp_set1 | temp_set2;
+SortedSet<T, Compare> operator^(const SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	return (set1 - set2) | (set2 - set1);
 }
 /* Same as described above, with assignment to the left operand
  * Returns reference to the left operand                                      */
