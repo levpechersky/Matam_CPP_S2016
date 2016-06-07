@@ -6,8 +6,6 @@
 template<class T, class Compare = std::less<T> >
 class SortedSet;
 
-//template<class T, class Compare>
-//SortedSet<T,Compare> operator|(const SortedSet<T,Compare>& set1,const SortedSet<T,Compare>& set2);
 // ****************************************************************************
 // ***************************** node class ***********************************
 // ****************************************************************************
@@ -248,32 +246,6 @@ public:
 		return count;
 	}
 
-	/*
-	 * return:
-	 * new SortedSet, containing an intersection of two sets.
-	 */
-    //SortedSet operator&(const SortedSet&) const;
-
-
-	/* Creates new set, containing an elements, which are contained in first
-	 * set (left operand) but aren't contained in the second one (right operand)
-	 * e.g. A-B returns (in terms of math) A\B
-	 *
-	 * return:
-	 * new SortedSet, as described above
-	 */
-    //SortedSet operator-(const SortedSet&) const;
-
-	/* Creates new set, containing an elements, which are contained in one of
-	 * sets only.
-	 * e.g A^B returns (in terms of math) (A U B)\(A n B), where 'n' stands
-	 *  for intersection of A and B
-	 *
-	 * return:
-	 * new SortedSet, as described above
-	 */
-   // SortedSet operator^(const SortedSet&) const;//TODO probably should be implemented as (A|B)-(A&B)
-
 	/* SortedSet constructor.
 	 *
 	 * return:
@@ -329,6 +301,12 @@ private:
 	}
 };
 
+/*
+ * Union of sets A and B is defined as a set of objects that belong to A or B
+ *
+ * return:
+ * new SortedSet, containing union of two sets.
+ */
 template<class T, class Compare>
 SortedSet<T,Compare> operator|(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> copy(set1);
@@ -338,7 +316,21 @@ SortedSet<T,Compare> operator|(const SortedSet<T,Compare>& set1, const SortedSet
 	}
 	return copy;
 }
+/* Same as described above, with assignment to the left operand
+ * Returns reference to the left operand                                      */
+template<class T, class Compare>
+SortedSet<T, Compare>& operator|=(SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	return set1 = set1 | set2;
+}
 
+/*
+ * Intersection of sets A and B is defined as a set of objects that belong
+ * to set A and set B
+ *
+ * return:
+ * new SortedSet, containing an intersection of two sets.
+ */
 template<class T, class Compare>
 SortedSet<T,Compare> operator&(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> copy(set1);
@@ -351,7 +343,21 @@ SortedSet<T,Compare> operator&(const SortedSet<T,Compare>& set1, const SortedSet
 	}
 	return to_return;
 }
+/* Same as described above, with assignment to the left operand
+ * Returns reference to the left operand                                      */
+template<class T, class Compare>
+SortedSet<T, Compare>& operator&=(SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	return set1 = set1 & set2;
+}
 
+/* Creates new set, containing an elements, which are contained in first
+ * set (left operand) but aren't contained in the second one (right operand)
+ * e.g. A-B returns (in terms of math) A\B
+ *
+ * return:
+ * new SortedSet, as described above
+ */
 template<class T, class Compare>
 SortedSet<T,Compare> operator-(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> copy(set2);
@@ -364,12 +370,55 @@ SortedSet<T,Compare> operator-(const SortedSet<T,Compare>& set1, const SortedSet
 	}
 	return to_return;
 }
-
+/* Same as described above, with assignment to the left operand
+ * Returns reference to the left operand                                      */
 template<class T, class Compare>
-SortedSet<T,Compare> operator^(const SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
+SortedSet<T, Compare>& operator-=(SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	return set1 = set1 - set2;
+}
+
+/* Creates new set, containing an elements, which are contained in one of
+ * sets only.
+ * e.g A^B returns (in terms of math) (A U B)\(A n B), where 'n' stands
+ *  for intersection of A and B
+ *
+ * return:
+ * new SortedSet, as described above
+ */
+template<class T, class Compare>
+SortedSet<T,Compare> operator^(SortedSet<T,Compare>& set1, const SortedSet<T,Compare>& set2){
 	SortedSet<T,Compare> temp_set1=set1-set2;
 	SortedSet<T,Compare> temp_set2=set2-set1;
 	return temp_set1 | temp_set2;
+}
+/* Same as described above, with assignment to the left operand
+ * Returns reference to the left operand                                      */
+template<class T, class Compare>
+SortedSet<T, Compare>& operator^=(SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	return set1 = set1 ^ set2;
+}
+
+/* Two sets are equal if and only if they have the same elements.
+ *
+ * return:
+ * true - if sets are equal
+ * false - otherwise
+ */
+template<class T, class Compare>
+bool operator==(const SortedSet<T, Compare>& set1,
+		const SortedSet<T, Compare>& set2) {
+	auto it1 = set1.begin(), it2 = set2.begin(), end = set1.end();
+	while (it1 != end && it2 != end) {
+		if (Compare()(*it1, *it2) || Compare()(*it2++, *it1++)) {
+			return false;
+		}
+	}
+	if (it1 != end || it2 != end) {
+		return false;
+	}
+	return true;
 }
 
 #endif //MTM4_SORTEDSET_H
