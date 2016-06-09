@@ -432,19 +432,19 @@ bool testComboTest(){
 	return true;
 }
 
-int main() {
-	RUN_TEST(testSortedSetCtor);
-	RUN_TEST(testSortedSetCopyCtor);
-	RUN_TEST(testSortedSetAssignOperator);
-	RUN_TEST(testBeginEnd);
-	RUN_TEST(testSize);
-	RUN_TEST(testInsert);
-	RUN_TEST(testRemove);
-	RUN_TEST(testFind);
-	RUN_TEST(testUnion);
-	RUN_TEST(testIntersection);
-	RUN_TEST(testRelativeComplement);
-	RUN_TEST(testSymmetricDifference);
-	RUN_TEST(testComboTest);
-	return 0;
-}
+//int main() {
+//	RUN_TEST(testSortedSetCtor);
+//	RUN_TEST(testSortedSetCopyCtor);
+//	RUN_TEST(testSortedSetAssignOperator);
+//	RUN_TEST(testBeginEnd);
+//	RUN_TEST(testSize);
+//	RUN_TEST(testInsert);
+//	RUN_TEST(testRemove);
+//	RUN_TEST(testFind);
+//	RUN_TEST(testUnion);
+//	RUN_TEST(testIntersection);
+//	RUN_TEST(testRelativeComplement);
+//	RUN_TEST(testSymmetricDifference);
+//	RUN_TEST(testComboTest);
+//	return 0;
+//}

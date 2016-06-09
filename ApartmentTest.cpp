@@ -54,8 +54,6 @@ bool testConstructor() {
 	const int width = 4;
 	const int price = 1;
 	Apartment::SquareType** board = createSquaresEmpty(length, width);
-	Apartment::SquareType** illegal_board = createSquaresEmpty(1,1);
-	illegal_board[0][0] = Apartment::NUM_SQUARE_TYPES;
 	ASSERT_THROW(Apartment::IllegalArgException,
 			Apartment(nullptr, length, width, price));
 	ASSERT_THROW(Apartment::IllegalArgException,
@@ -68,12 +66,9 @@ bool testConstructor() {
 			Apartment(board, length, -1, price));
 	ASSERT_THROW(Apartment::IllegalArgException,
 			Apartment(board, -1, width, price));
-	ASSERT_THROW(Apartment::IllegalArgException,
-				Apartment(illegal_board, 1, 1, price));
 	ASSERT_NO_THROW(Apartment(board, length, width, 0));
 	ASSERT_NO_THROW(Apartment(board, length, width, price));
 	deleteSquares(board, length);
-	deleteSquares(illegal_board,1);
 	return true;
 }
 
@@ -274,7 +269,7 @@ bool testOperatorLess() {
 	 apartment_4x100(tiles_board, length, width, 400),// ratio: 100 per meter
 	 apartment_4x200(tiles_board, length, width, 800);// ratio: 200 per meter
 	ASSERT_EQUALS(false, apartment_00 < apartment_00);
-	ASSERT_EQUALS(true,  apartment_00 < apartment_inf_1);
+	ASSERT_EQUALS(false,  apartment_00 < apartment_inf_1);
 	ASSERT_EQUALS(false, apartment_00 < apartment_9x100);
 	ASSERT_EQUALS(false, apartment_inf_2 < apartment_00);
 	ASSERT_EQUALS(false, apartment_inf_1 < apartment_inf_2);

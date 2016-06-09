@@ -136,9 +136,6 @@ bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 			return (ratio_1 < ratio_2);
 		}
 	} else if (area_1 == 0) {
-		if (price_1 == 0 && area_2 == 0 && price_2 != 0) {
-			return true;
-		}
 		return false;
 	} else if (area_2 == 0) {
 		return price_2 != 0;
