@@ -11,16 +11,21 @@
 class Broker: public BrokerIfc {
 	class CompareClients {
 	public:
-		bool operator()(const Client& c1, const Client& c2) const;
+		bool operator()(const Client& c1, const Client& c2) const {
+			return c1.getPriority() == c2.getPriority() ?
+					c1.getId() < c2.getId() :
+					c1.getPriority() < c2.getPriority();//TODO consider implementing in cpp
+		}
+		bool operator()(const Client* c1, const Client* c2) const {
+			return c1->getPriority() == c2->getPriority() ?
+					c1->getId() < c2->getId() :
+					c1->getPriority() < c2->getPriority();//TODO consider implementing in cpp
+		}
 	};
 
 	SortedSet<Publisher*, CompareClients> publishers;
 	SortedSet<Subscriber*, CompareClients> subscribers;
 
-	Broker() = default;
-	Broker(const Broker&) = default;
-	Broker& operator=(const Broker&) = default;
-	virtual ~Broker() {}
 
 	virtual void subscribeToTopic(const Subscriber& sub, const Topic& t);
 
@@ -33,7 +38,11 @@ class Broker: public BrokerIfc {
 	virtual void publishMessage(const Topic& t, const std::string& message,
 			const Client& sender) const;
 
-public:
+public://TODO moved to public temporarily
+	Broker() = default;
+	Broker(const Broker&) = default;
+	Broker& operator=(const Broker&) = default;
+	virtual ~Broker() {}
 
 };
 
