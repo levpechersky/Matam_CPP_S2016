@@ -19,12 +19,12 @@ public:
 
 	Subscriber(const Subscriber& p) = default;
 	Subscriber& operator=(const Subscriber&) = default;
-	virtual ~Subscriber(){}
-	virtual void subscribeToTopic(const Topic& t);
-	virtual void unsubscribeToTopic(const Topic& t);
-	virtual void unsubscribeAll();
+	virtual ~Subscriber(){};
+	virtual void subscribeToTopic(const Topic& t){};
+	virtual void unsubscribeToTopic(const Topic& t){};
+	virtual void unsubscribeAll(){};
 	virtual void receiveMessage(const string& message, const Topic& t,
-			const Client& sender) const;
+			const Client& sender) const{};
 
 };
 

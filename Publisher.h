@@ -15,15 +15,15 @@ class Publisher: public Client {
 
 public:
 	Publisher(int priority, BrokerIfc& broker, ostream& messagesSink = cout) :
-			Client(priority, broker, messagesSink) {}
+		Client(priority, broker, messagesSink) {};
 
 	Publisher(const Publisher& p) = default;
 	Publisher& operator=(const Publisher&) = default;
-	virtual ~Publisher(){}
-	virtual void publishTopic(const Topic& t);
-	virtual void unpublishTopic(const Topic& t);
-	virtual void unpublishAll();
-	virtual void sendMessage(const string& message, const Topic& t) const;
+	virtual ~Publisher(){};
+	virtual void publishTopic(const Topic& t){};
+	virtual void unpublishTopic(const Topic& t){};
+	virtual void unpublishAll(){};
+	virtual void sendMessage(const string& message, const Topic& t) const{};
 
 };
 

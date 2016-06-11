@@ -35,7 +35,7 @@ public:
     Client(int priority, BrokerIfc& broker, std::ostream& messagesSink = std::cout);
     Client(const Client& c) = default;
     Client& operator=(const Client&) = default;
-    virtual ~Client(){}
+    virtual ~Client(){};
     int getPriority() const;
     int getId() const;
     void receiveMaintenanceMessage(const std::string& s) const;

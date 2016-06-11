@@ -25,9 +25,9 @@ public:
 
 	EncryptionPublisher(const EncryptionPublisher& p) = default;
 	EncryptionPublisher& operator=(const EncryptionPublisher&) = default;
-	virtual ~EncryptionPublisher(){}
+	virtual ~EncryptionPublisher(){};
 	virtual void sendMessage(const string& message, const Topic& t) const
-			override;
+			override{};
 };
 
 #endif //MTM4_ENCRYPTIONPUBLISHER_H

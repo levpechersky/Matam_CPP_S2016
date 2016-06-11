@@ -25,9 +25,9 @@ public:
 
 	EncryptionSubscriber(const EncryptionSubscriber& p) = default;
 	EncryptionSubscriber& operator=(const EncryptionSubscriber&) = default;
-	virtual ~EncryptionSubscriber(){}
+	virtual ~EncryptionSubscriber(){};
 	virtual void receiveMessage(const string& message, const Topic& t,
-			const Client& sender) const override;
+			const Client& sender) const override{};
 };
 
 
