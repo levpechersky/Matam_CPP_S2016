@@ -1,12 +1,20 @@
 /*
  * Client.cpp
  *
+ *  Created on: 10 áéåð 2016
+ *      Author: batel
  */
 #include "Client.h"
+
+int Client::nextId=0;
 
 Client::Client(int priority, BrokerIfc& broker, std::ostream& messagesSink):
    id(nextId),priority(priority),set(SortedSet<Topic,strCompare>())
    ,broker(broker),messagesSink(messagesSink){
+	if(priority<0){
+		throw IllegalPriority();
+	}
+	nextId++;
 }
 int Client::getPriority() const{
 	return priority;

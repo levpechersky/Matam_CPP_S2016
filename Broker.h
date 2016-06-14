@@ -24,8 +24,8 @@ class Broker: public BrokerIfc {
 		}
 	};
 
-	map<Topic,SortedSet<Subscriber*, CompareClients>> subscriber_map;
-	SortedSet<Client*, CompareClients> client_set;
+	map<Topic,SortedSet<const Subscriber*, CompareClients>> subscriber_map;
+	SortedSet<const Client*, CompareClients> client_set;
 
 
 	virtual void subscribeToTopic(const Subscriber& sub, const Topic& t);
@@ -39,7 +39,7 @@ class Broker: public BrokerIfc {
 			const Client& sender) const;
 	void sendMaintenanceMessageAny(std::list<Topic> list,std::string str);
 	void sendMaintenanceMessageAll(std::list<Topic> list,std::string str);
-	static bool allTopicsMatch(Client* client,std::list<Topic> list);
+	static bool allTopicsMatch(const Client* client,std::list<Topic> list);
 
 public://TODO moved to public temporarily
 	Broker() = default;

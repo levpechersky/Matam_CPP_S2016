@@ -6,31 +6,31 @@
 using std::pair;
 
 void Broker::subscribeToTopic(const Subscriber& sub,const Topic& t) {
-	map<Topic,SortedSet<Subscriber*, CompareClients>>::iterator it=subscriber_map.find(t);
+	map<Topic,SortedSet<const Subscriber*, CompareClients>>::iterator it=subscriber_map.find(t);
 	if (it != subscriber_map.end()){
-	SortedSet<Subscriber*, CompareClients> set;
-	set.insert(const_cast<Subscriber * const>(&sub));
-	subscriber_map.insert(pair<Topic,SortedSet<Subscriber*, CompareClients>>(t,set));
+	SortedSet<const Subscriber*, CompareClients> set;
+	set.insert(&sub);
+	subscriber_map.insert(pair<Topic,SortedSet<const Subscriber*, CompareClients>>(t,set));
 	}else{
-		subscriber_map.at(t).insert(const_cast<Subscriber * const>(&sub));
+		subscriber_map.at(t).insert(&sub);
 	}
-	client_set.insert(const_cast<Subscriber * const>(&sub));
+	client_set.insert(&sub);
 }
 
 void Broker::unsubscribeToTopic(const Subscriber& sub, const Topic& t) {
-	map<Topic,SortedSet<Subscriber*, CompareClients>>::iterator it=subscriber_map.find(t);
+	map<Topic,SortedSet<const Subscriber*, CompareClients>>::iterator it=subscriber_map.find(t);
 	if (it == subscriber_map.end()) return;
-	subscriber_map.at(t).remove(const_cast<Subscriber * const>(&sub));
-	client_set.remove(const_cast<Subscriber * const>(&sub));
+	subscriber_map.at(t).remove(&sub);
+	client_set.remove(&sub);
 }
 
 void Broker::publishTopic(const Publisher& pub, const Topic& t) {
-	client_set.insert(const_cast<Publisher * const>(&pub));
+	client_set.insert(&pub);
 }
 
 
 void Broker::unpublishTopic(const Publisher& pub, const Topic& t) {
-	client_set.remove(const_cast<Publisher * const>(&pub));
+	client_set.remove(&pub);
 }
 
 void Broker::sendMaintenanceMessageAny(std::list<Topic> list,std::string str){
@@ -55,7 +55,7 @@ void Broker::sendMaintenanceMessageAll(std::list<Topic> list,std::string str){
 	}
 }
 
-bool Broker::allTopicsMatch(Client* client, std::list<Topic> list){
+bool Broker::allTopicsMatch(const Client* client, std::list<Topic> list){
 	auto list_end = list.end(), list_it = list.begin();
 	for (; list_it != list_end; list_it++) {
 		if(!client->topicExist(*list_it)){

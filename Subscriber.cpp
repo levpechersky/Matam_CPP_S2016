@@ -26,7 +26,7 @@ void Subscriber::unsubscribeAll(){
 
 void Subscriber::receiveMessage(const std::string& message, const Topic& t,
 								const Client& sender) const {
-	if((set.find(t)) == set.end()){
+	if(!topicExist(t)){
 		throw NonSubscribedTopic();
 	}
 	cout << "Topic: " << t << ". Sender: " << sender.getId() << ". Receiver: "

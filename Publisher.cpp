@@ -24,7 +24,8 @@ void Publisher::unpublishAll(){
 }
 
 void Publisher::sendMessage(const std::string& message, const Topic& t) const{
-	if((set.find(t)) != set.end()){
-		broker.publishMessage(t, message, *this);
+	if(!topicExist(t)){
+		throw NonPublishedTopic();
 	}
+	broker.publishMessage(t, message, *this);
 }
