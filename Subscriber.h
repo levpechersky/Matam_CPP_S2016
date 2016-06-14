@@ -15,16 +15,16 @@ class Subscriber : public Client {
 
 public:
 	Subscriber(int priority, BrokerIfc& broker, ostream& messagesSink = cout) :
-			Client(priority, broker, messagesSink) {};
+		Client(priority, broker,messagesSink) {};
 
-	Subscriber(const Subscriber& p) = default;
-	Subscriber& operator=(const Subscriber&) = default;
-	virtual ~Subscriber(){};
-	virtual void subscribeToTopic(const Topic& t){};
-	virtual void unsubscribeToTopic(const Topic& t){};
-	virtual void unsubscribeAll(){};
+	Subscriber(const Subscriber& p) = delete;
+	Subscriber& operator=(const Subscriber&) = delete;
+	virtual ~Subscriber(){}
+	virtual void subscribeToTopic(const Topic& t);
+	virtual void unsubscribeToTopic(const Topic& t);
+	virtual void unsubscribeAll();
 	virtual void receiveMessage(const string& message, const Topic& t,
-			const Client& sender) const{};
+			const Client& sender) const;
 
 };
 

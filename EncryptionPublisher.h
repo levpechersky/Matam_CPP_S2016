@@ -19,15 +19,14 @@ using std::string;
 class EncryptionPublisher: public Publisher {
 	const char key;
 public:
-	EncryptionPublisher(int priority, BrokerIfc& broker, char key,
-			ostream& messagesSink = cout) :
-			Publisher(priority, broker, messagesSink), key(key) {};
+	EncryptionPublisher(int priority, BrokerIfc& broker, char key) :
+			Publisher(priority, broker), key(key) {};
 
 	EncryptionPublisher(const EncryptionPublisher& p) = default;
 	EncryptionPublisher& operator=(const EncryptionPublisher&) = default;
-	virtual ~EncryptionPublisher(){};
+	virtual ~EncryptionPublisher(){}
 	virtual void sendMessage(const string& message, const Topic& t) const
-			override{};
+			override;
 };
 
 #endif //MTM4_ENCRYPTIONPUBLISHER_H

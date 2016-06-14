@@ -14,16 +14,16 @@ using std::string;
 class Publisher: public Client {
 
 public:
-	Publisher(int priority, BrokerIfc& broker, ostream& messagesSink = cout) :
-		Client(priority, broker, messagesSink) {};
+	Publisher(int priority, BrokerIfc& broker, std::ostream& messagesSink = std::cout) :
+			Client(priority, broker,messagesSink) {}
 
-	Publisher(const Publisher& p) = default;
-	Publisher& operator=(const Publisher&) = default;
-	virtual ~Publisher(){};
-	virtual void publishTopic(const Topic& t){};
-	virtual void unpublishTopic(const Topic& t){};
-	virtual void unpublishAll(){};
-	virtual void sendMessage(const string& message, const Topic& t) const{};
+	Publisher(const Publisher& p) = delete;
+	Publisher& operator=(const Publisher&) = delete;
+	virtual ~Publisher(){}
+	virtual void publishTopic(const Topic& t);
+	virtual void unpublishTopic(const Topic& t);
+	virtual void unpublishAll();
+	virtual void sendMessage(const string& message, const Topic& t) const;
 
 };
 

@@ -7,6 +7,7 @@
 #include "Publisher.h"
 #include "Subscriber.h"
 #include "BrokerIfc.h"
+using std::map;
 
 class Broker: public BrokerIfc {
 	class CompareClients {
@@ -23,8 +24,8 @@ class Broker: public BrokerIfc {
 		}
 	};
 
-	SortedSet<Publisher*, CompareClients> publishers;
-	SortedSet<Subscriber*, CompareClients> subscribers;
+	map<Topic,SortedSet<Subscriber*, CompareClients>> subscriber_map;
+	SortedSet<Client*, CompareClients> client_set;
 
 
 	virtual void subscribeToTopic(const Subscriber& sub, const Topic& t);
@@ -32,11 +33,13 @@ class Broker: public BrokerIfc {
 	virtual void unsubscribeToTopic(const Subscriber& sub, const Topic& t);
 
 	virtual void publishTopic(const Publisher& pub, const Topic& t);
-
 	virtual void unpublishTopic(const Publisher& pub, const Topic& t);
 
 	virtual void publishMessage(const Topic& t, const std::string& message,
 			const Client& sender) const;
+	void sendMaintenanceMessageAny(std::list<Topic> list,std::string str);
+	void sendMaintenanceMessageAll(std::list<Topic> list,std::string str);
+	static bool allTopicsMatch(Client* client,std::list<Topic> list);
 
 public://TODO moved to public temporarily
 	Broker() = default;

@@ -18,7 +18,7 @@ public:
 
     BrokerIfc& operator=(const BrokerIfc& broker) = default;
 
-    virtual ~BrokerIfc() = default;
+    virtual ~BrokerIfc(){}
 
 private:
     friend class Subscriber;
