@@ -7,7 +7,7 @@ using std::pair;
 
 void Broker::subscribeToTopic(const Subscriber& sub,const Topic& t) {
 	map<Topic,SortedSet<const Subscriber*, CompareClients>>::iterator it=subscriber_map.find(t);
-	if (it != subscriber_map.end()){
+	if (it == subscriber_map.end()){
 	SortedSet<const Subscriber*, CompareClients> set;
 	set.insert(&sub);
 	subscriber_map.insert(pair<Topic,SortedSet<const Subscriber*, CompareClients>>(t,set));
@@ -66,7 +66,14 @@ bool Broker::allTopicsMatch(const Client* client, std::list<Topic> list){
 }
 
 void Broker::publishMessage(const Topic& t, const std::string& message,
-			const Client& sender) const {
-	return;
+		const Client& sender) const{
+	auto it=subscriber_map.find(t);
+	if (it == subscriber_map.end())return;
+	SortedSet<const Subscriber*, CompareClients> set=subscriber_map.at(t);
+	auto set_end = set.end(), set_it = set.begin();
+	for (; set_it != set_end; set_it++) {
+		(*set_it)->receiveMessage(message,t,sender);
+	}
 }
+
 

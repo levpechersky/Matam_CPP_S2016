@@ -1,7 +1,7 @@
 /*
  * Client.cpp
  *
- *  Created on: 10 áéåð 2016
+ *  Created on: 10  2016
  *      Author: batel
  */
 #include "Client.h"
@@ -33,7 +33,7 @@ void Client::deleteAllTopic(){
 	for(;it != this_end ;it++){
 		set.remove(*it);
 		it=set.begin();
-		//this_end = set.end(); Has been pointing to illegal organ
+		//this_end = set.end(); Has been pointing to illegal member
 	}
 }
 bool Client::topicExist(const Topic& t) const{

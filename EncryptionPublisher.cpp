@@ -7,5 +7,5 @@ void EncryptionPublisher::sendMessage(const string& message, const Topic& t) con
 	for(unsigned int i=0; i<temp.length(); i++){
 		temp[i] ^= key;
 	}
-	Publisher::sendMessage(message, t);
+	Publisher::sendMessage(temp, t);
 }
