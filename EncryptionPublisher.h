@@ -19,8 +19,9 @@ using std::string;
 class EncryptionPublisher: public Publisher {
 	const char key;
 public:
-	EncryptionPublisher(int priority, BrokerIfc& broker, char key) :
-			Publisher(priority, broker), key(key) {};
+	EncryptionPublisher(int priority, BrokerIfc& broker, char key,
+			ostream& messagesSink = cout) :
+			Publisher(priority, broker, messagesSink), key(key) {};
 
 	EncryptionPublisher(const EncryptionPublisher& p) = default;
 	EncryptionPublisher& operator=(const EncryptionPublisher&) = default;

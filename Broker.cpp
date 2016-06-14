@@ -64,3 +64,9 @@ bool Broker::allTopicsMatch(const Client* client, std::list<Topic> list){
 	}
 	return true;
 }
+
+void Broker::publishMessage(const Topic& t, const std::string& message,
+			const Client& sender) const {
+	return;
+}
+
