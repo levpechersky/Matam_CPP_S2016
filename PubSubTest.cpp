@@ -52,7 +52,7 @@ bool pubSubTestExample() {
     return true;
 }
 
-//int main() {
-//    RUN_TEST(pubSubTestExample);
-//    return true;
-//}
+int main() {
+    RUN_TEST(pubSubTestExample);
+    return true;
+}

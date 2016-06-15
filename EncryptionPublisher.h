@@ -25,6 +25,7 @@ public:
 
 	EncryptionPublisher(const EncryptionPublisher& p) = delete;
 	EncryptionPublisher& operator=(const EncryptionPublisher&) = delete;
+
 	virtual ~EncryptionPublisher(){}
 	virtual void sendMessage(const string& message, const Topic& t) const
 			override;

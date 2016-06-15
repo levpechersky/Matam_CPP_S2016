@@ -25,6 +25,7 @@ public:
 
 	EncryptionSubscriber(const EncryptionSubscriber& p) = delete;
 	EncryptionSubscriber& operator=(const EncryptionSubscriber&) = delete;
+
 	virtual ~EncryptionSubscriber(){}
 	virtual void receiveMessage(const string& message, const Topic& t,
 			const Client& sender) const override;

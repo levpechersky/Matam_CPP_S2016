@@ -28,12 +28,12 @@ class Broker: public BrokerIfc {
 		bool operator()(const Client& c1, const Client& c2) const {
 			return c1.getPriority() == c2.getPriority() ?
 					c1.getId() < c2.getId() :
-					c1.getPriority() < c2.getPriority();//TODO consider implementing in cpp
+					c1.getPriority() < c2.getPriority();
 		}
 		bool operator()(const Client* c1, const Client* c2) const {
 			return c1->getPriority() == c2->getPriority() ?
 					c1->getId() < c2->getId() :
-					c1->getPriority() < c2->getPriority();//TODO consider implementing in cpp
+					c1->getPriority() < c2->getPriority();
 		}
 	};
 
@@ -47,7 +47,7 @@ class Broker: public BrokerIfc {
 	 * @param sub- Subscriber to send messages on a given topic.
      *
 	 * @Return:
-	 *  non.
+	 *  none
      */
 	virtual void subscribeToTopic(const Subscriber& sub, const Topic& t);
 
@@ -60,7 +60,7 @@ class Broker: public BrokerIfc {
 	 * will not reach to him.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void unsubscribeToTopic(const Subscriber& sub, const Topic& t);
 
@@ -72,7 +72,7 @@ class Broker: public BrokerIfc {
 	 * @param pub- a Publisher would send a message to the given topic.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void publishTopic(const Publisher& pub, const Topic& t);
 
@@ -82,7 +82,7 @@ class Broker: public BrokerIfc {
 	 * @param pub-a Publisher that could not send a message to the given topic.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void unpublishTopic(const Publisher& pub, const Topic& t);
 
@@ -94,7 +94,7 @@ class Broker: public BrokerIfc {
      * @param sender-the Publisher that publish the message.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void publishMessage(const Topic& t, const std::string& message,
 			const Client& sender) const;
@@ -106,7 +106,7 @@ class Broker: public BrokerIfc {
      * @param str- control message.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	void sendMaintenanceMessageAny(std::list<Topic> list,std::string str);
 
@@ -117,7 +117,7 @@ class Broker: public BrokerIfc {
      * @param str- control message.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	void sendMaintenanceMessageAll(std::list<Topic> list,std::string str);
 
@@ -131,7 +131,7 @@ class Broker: public BrokerIfc {
 	 */
 	static bool allTopicsMatch(const Client* client,std::list<Topic> list);
 
-public://TODO moved to public temporarily
+public:
 
     /* Broker default Constructor
      *

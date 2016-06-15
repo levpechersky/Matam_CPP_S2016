@@ -23,7 +23,8 @@ public:
      *  @Return:
 	 * 	a new Subscriber object.
      */
-	Subscriber(int priority, BrokerIfc& broker, ostream& messagesSink = std::cout);
+	Subscriber(int priority, BrokerIfc& broker,
+			ostream& messagesSink = std::cout);
 
     /* Copy C'tor and assignment operator are deleted.
      * Subscriber (or any derived class) cannot be copied or assigned.

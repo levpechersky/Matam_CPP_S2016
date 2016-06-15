@@ -3,39 +3,44 @@
 #include "Broker.h"
 #include <string>
 
+using std::cout;
+using std::endl;
+using std::string;
+
 Subscriber::Subscriber(int priority, BrokerIfc& broker, ostream& messagesSink) :
-   Client(priority, broker,messagesSink) {
-      if(priority<0){
-	     throw IllegalPriority();
-      }
+		Client(priority, broker, messagesSink) {
+	if (priority < 0) {
+		throw IllegalPriority();
+	}
 }
 
-void Subscriber::subscribeToTopic(const Topic& t){
-	if(set.insert(t)){
+void Subscriber::subscribeToTopic(const Topic& t) {
+	if (set.insert(t)) {
 		broker.subscribeToTopic(*this, t);
 	}
 }
 
-void Subscriber::unsubscribeToTopic(const Topic& t){
-	if(set.remove(t)){
+void Subscriber::unsubscribeToTopic(const Topic& t) {
+	if (set.remove(t)) {
 		broker.unsubscribeToTopic(*this, t);
 	}
 }
 
-void Subscriber::unsubscribeAll(){
+void Subscriber::unsubscribeAll() {
 	auto i = set.begin(), end = set.end();
-	while(i != end){
+	while (i != end) {
 		Topic temp = *i;
 		set.remove(temp);
-		i=set.begin();
+		i = set.begin();
 	}
 }
 
-void Subscriber::receiveMessage(const std::string& message, const Topic& t,
-								const Client& sender) const {
-	if(!topicExist(t)){
+void Subscriber::receiveMessage(const string& message, const Topic& t,
+		const Client& sender) const {
+	if (!topicExist(t)) {
 		throw NonSubscribedTopic();
 	}
-	cout << "Topic: " << t << ". Sender: " << sender.getId() << ". Receiver: "
-		<< getId() << ". Message: " << message << std::endl;
+	messagesSink << "Topic: " << t << ". Sender: " << sender.getId()
+			<< ". Receiver: " << getId() << ". Message: " << message
+			<< endl;
 }

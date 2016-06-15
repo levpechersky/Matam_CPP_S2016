@@ -2,36 +2,39 @@
 #include "Broker.h"
 #include <string>
 
-Publisher::	Publisher(int priority, BrokerIfc& broker, std::ostream& messagesSink) :
-    Client(priority, broker,messagesSink) {
-      if(priority<0){
-         throw IllegalPriority();
-      }
+using std::ostream;
+using std::string;
+
+Publisher::Publisher(int priority, BrokerIfc& broker, ostream& messagesSink) :
+		Client(priority, broker, messagesSink) {
+	if (priority < 0) {
+		throw IllegalPriority();
+	}
 }
 
-void Publisher::publishTopic(const Topic& t){
-	if(set.insert(t)){
+void Publisher::publishTopic(const Topic& t) {
+	if (set.insert(t)) {
 		broker.publishTopic(*this, t);
 	}
 }
 
-void Publisher::unpublishTopic(const Topic& t){
-	if(set.remove(t)){
+void Publisher::unpublishTopic(const Topic& t) {
+	if (set.remove(t)) {
 		broker.unpublishTopic(*this, t);
 	}
 }
 
-void Publisher::unpublishAll(){
+void Publisher::unpublishAll() {
 	auto i = set.begin(), end = set.end();
-	while(i != end){
+	while (i != end) {
 		Topic temp = *i;
 		set.remove(temp);
-		i=set.begin();
+		i = set.begin();
 	}
 }
 
-void Publisher::sendMessage(const std::string& message, const Topic& t) const{
-	if(!topicExist(t)){
+void Publisher::sendMessage(const string& message, const Topic& t) const {
+	if (!topicExist(t)) {
 		throw NonPublishedTopic();
 	}
 	broker.publishMessage(t, message, *this);

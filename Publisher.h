@@ -7,10 +7,6 @@
 #include "BrokerIfc.h"
 #include "Client.h"
 
-using std::ostream;
-using std::cout;
-using std::string;
-
 class Publisher: public Client {
 public:
     /* Publisher Constructor
@@ -23,7 +19,8 @@ public:
      *  @Return:
 	 * 	a new Publisher object.
      */
-	Publisher(int priority, BrokerIfc& broker, std::ostream& messagesSink = std::cout);
+	Publisher(int priority, BrokerIfc& broker,
+			std::ostream& messagesSink = std::cout);
 
     /* Copy C'tor and assignment operator are deleted.
      * Publisher (or any derived class) cannot be copied or assigned.
@@ -76,7 +73,7 @@ public:
      * @Return:
 	 *  non.
 	 */
-	virtual void sendMessage(const string& message, const Topic& t) const;
+	virtual void sendMessage(const std::string& message, const Topic& t) const;
 
 };
 

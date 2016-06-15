@@ -625,7 +625,7 @@ bool comboTestConstCorrectness(){
 	return true;
 }
 
-int main() {
+bool sortedSetTest() {
 	RUN_TEST(testIteratorCopyAndAssignment);
 	RUN_TEST(testIteratorIncrements);
 	RUN_TEST(testIteratorEquality);
