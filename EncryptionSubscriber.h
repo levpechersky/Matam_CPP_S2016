@@ -23,8 +23,8 @@ public:
 			ostream& messagesSink = cout) :
 			Subscriber(priority, broker, messagesSink), key(key) {};
 
-	EncryptionSubscriber(const EncryptionSubscriber& p) = default;
-	EncryptionSubscriber& operator=(const EncryptionSubscriber&) = default;
+	EncryptionSubscriber(const EncryptionSubscriber& p) = delete;
+	EncryptionSubscriber& operator=(const EncryptionSubscriber&) = delete;
 	virtual ~EncryptionSubscriber(){}
 	virtual void receiveMessage(const string& message, const Topic& t,
 			const Client& sender) const override;

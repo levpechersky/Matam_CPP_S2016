@@ -3,6 +3,13 @@
 #include "Broker.h"
 #include <string>
 
+Subscriber::Subscriber(int priority, BrokerIfc& broker, ostream& messagesSink) :
+   Client(priority, broker,messagesSink) {
+      if(priority<0){
+	     throw IllegalPriority();
+      }
+}
+
 void Subscriber::subscribeToTopic(const Topic& t){
 	if(set.insert(t)){
 		broker.subscribeToTopic(*this, t);

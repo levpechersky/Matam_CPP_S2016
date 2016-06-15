@@ -2,6 +2,13 @@
 #include "Broker.h"
 #include <string>
 
+Publisher::	Publisher(int priority, BrokerIfc& broker, std::ostream& messagesSink) :
+    Client(priority, broker,messagesSink) {
+      if(priority<0){
+         throw IllegalPriority();
+      }
+}
+
 void Publisher::publishTopic(const Topic& t){
 	if(set.insert(t)){
 		broker.publishTopic(*this, t);

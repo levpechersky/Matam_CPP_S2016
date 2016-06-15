@@ -1,8 +1,6 @@
 /*
  * Client.cpp
  *
- *  Created on: 10  2016
- *      Author: batel
  */
 #include "Client.h"
 
@@ -21,20 +19,6 @@ int Client::getPriority() const{
 }
 int Client::getId() const{
 	return id;
-}
-void Client::insertTopic(const Topic& t){
-	set.insert(t);
-}
-void Client::deleteTopic(const Topic& t) {
-	set.remove(t);
-}
-void Client::deleteAllTopic(){
-	auto this_end = set.end(), it=set.begin();
-	for(;it != this_end ;it++){
-		set.remove(*it);
-		it=set.begin();
-		//this_end = set.end(); Has been pointing to illegal member
-	}
 }
 bool Client::topicExist(const Topic& t) const{
 	auto it=set.find(t),this_end = set.end();

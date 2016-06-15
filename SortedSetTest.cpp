@@ -9,6 +9,26 @@
 using std::endl;
 using std::cout;
 
+//==== Helper types and Functions ==============================================
+
+//Additional compare operator for sets
+template<class T, class Compare>
+bool operator==(const SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	auto iterator_1 = set_1.begin(), iterator_2 = set_2.begin(),
+			end = set_1.end();
+	while (iterator_1 != end && iterator_2 != end) {
+		if (Compare()(*iterator_1, *iterator_2) ||
+				Compare()(*iterator_2++, *iterator_1++)) {
+			return false;
+		}
+	}
+	if (iterator_1 != end || iterator_2 != end) {
+		return false;
+	}
+	return true;
+}
+
 struct Int {
     int i;
 
@@ -49,6 +69,8 @@ public:
 		return s1.compare(s2) < 0;
 	}
 };
+
+//==== Tests ===================================================================
 
 bool testIteratorCopyAndAssignment(){
 	const int upper_bound = 10;
@@ -579,6 +601,30 @@ bool comboTestTheorems(){
 	return true;
 }
 
+bool comboTestConstCorrectness(){
+	//not really unit test, it just does not compile in case of errors.
+	const SortedSet<Int, IntCompare> empty;
+	const Int n(0);
+	SortedSet<Int, IntCompare> set;
+	ASSERT_NO_THROW((SortedSet<Int, IntCompare>(empty)));//copy C'tor
+	ASSERT_NO_THROW(set = empty);//operator=
+	ASSERT_NO_THROW(empty.begin());
+	ASSERT_NO_THROW(empty.end());
+	ASSERT_NO_THROW(set.insert(n));
+	ASSERT_NO_THROW(set.remove(n));
+	ASSERT_NO_THROW(empty.find(n));
+	ASSERT_NO_THROW(empty.size());
+	ASSERT_NO_THROW(empty | empty);
+	ASSERT_NO_THROW(empty & empty);
+	ASSERT_NO_THROW(empty - empty);
+	ASSERT_NO_THROW(empty ^ empty);
+	ASSERT_NO_THROW(set |= empty);
+	ASSERT_NO_THROW(set &= empty);
+	ASSERT_NO_THROW(set -= empty);
+	ASSERT_NO_THROW(set ^= empty);
+	return true;
+}
+
 int main() {
 	RUN_TEST(testIteratorCopyAndAssignment);
 	RUN_TEST(testIteratorIncrements);
@@ -598,5 +644,6 @@ int main() {
 	RUN_TEST(testSymmetricDifference);
 	RUN_TEST(comboTestEmptySets);
 	RUN_TEST(comboTestTheorems);
+	RUN_TEST(comboTestConstCorrectness);
 	return true;
 }

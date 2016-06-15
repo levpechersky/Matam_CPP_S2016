@@ -23,8 +23,8 @@ public:
 			ostream& messagesSink = cout) :
 			Publisher(priority, broker, messagesSink), key(key) {};
 
-	EncryptionPublisher(const EncryptionPublisher& p) = default;
-	EncryptionPublisher& operator=(const EncryptionPublisher&) = default;
+	EncryptionPublisher(const EncryptionPublisher& p) = delete;
+	EncryptionPublisher& operator=(const EncryptionPublisher&) = delete;
 	virtual ~EncryptionPublisher(){}
 	virtual void sendMessage(const string& message, const Topic& t) const
 			override;

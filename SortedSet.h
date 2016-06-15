@@ -409,27 +409,5 @@ SortedSet<T, Compare>& operator^=(SortedSet<T, Compare>& set_1,
 	return set_1 = set_1 ^ set_2;
 }
 
-/* Two sets are equal if and only if they have the same elements.
- *
- * return:
- * true - if sets are equal
- * false - otherwise
- */
-template<class T, class Compare>
-bool operator==(const SortedSet<T, Compare>& set_1,
-		const SortedSet<T, Compare>& set_2) {
-	auto iterator_1 = set_1.begin(), iterator_2 = set_2.begin(),
-			end = set_1.end();
-	while (iterator_1 != end && iterator_2 != end) {
-		if (Compare()(*iterator_1, *iterator_2) ||
-				Compare()(*iterator_2++, *iterator_1++)) {
-			return false;
-		}
-	}
-	if (iterator_1 != end || iterator_2 != end) {
-		return false;
-	}
-	return true;
-}
 
 #endif //MTM4_SORTEDSET_H
