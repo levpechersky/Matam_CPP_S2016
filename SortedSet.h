@@ -45,7 +45,7 @@ public:
 template<class T, class Compare>
 class SortedSet {
 public:
-    class Iterator {
+    class iterator {
     public:
     	/* Iterator copy constructor:
     	 * @param iterator: a const reference for an iterator to copy.
@@ -53,7 +53,7 @@ public:
     	 * a new iterator object.
     	 *
     	 */
-    	Iterator(const Iterator& iterator) : node(iterator.node) {}
+    	iterator(const iterator& iterator) : node(iterator.node) {}
 
     	/* Iterator assignment operator (=):
          * Get const reference of a iterator object, and copy it to this.
@@ -61,7 +61,7 @@ public:
 	     * return:
 	     * reference to this.
     	 */
-		Iterator& operator=(const Iterator& iterator) {
+		iterator& operator=(const iterator& iterator) {
 			node = iterator.node;
 			return *this;
 		}
@@ -69,7 +69,7 @@ public:
 		/* Iterator's destructor:
     	 * The function deletes the iterator.
     	 */
-		~Iterator() {}
+		~iterator() {}
 
        /**************Operators of iterator******************************/
 
@@ -84,12 +84,12 @@ public:
     	 * iterator inside set.
     	 * IMPORTANT: the function assumes the set iterator is not NULL.
     	 */
-		Iterator& operator++() {
+		iterator& operator++() {
 			node = node->next;
 			return *this;
 		}
-		Iterator operator++(int) {
-			Iterator temp = *this;
+		iterator operator++(int) {
+			iterator temp = *this;
 			++*this;
 			return temp;
 		}
@@ -108,7 +108,7 @@ public:
     	 * @param iterator: a const reference iterator to compare to.
     	 * return: boolean value indicates whether the iterator were equal or not.
     	 */
-		bool operator==(const Iterator& iterator) const {
+		bool operator==(const iterator& iterator) const {
 			return iterator.node == node;
 		}
 
@@ -116,7 +116,7 @@ public:
 		 * @param iterator: a const reference iterator to compare to.
 		 * return: boolean value indicates whether the iterator were not equal.
 		 */
-		bool operator!=(const Iterator& iterator) const {
+		bool operator!=(const iterator& iterator) const {
 			return !(*this == iterator);
 		}
 
@@ -129,7 +129,7 @@ public:
 		 * 		if <node> is null, new iterator is considered pointing to end.
 		 * return: new Iterator.
 		 */
-		Iterator(Node<T>* node = nullptr) :	node(node) {}
+		iterator(Node<T>* node = nullptr) :	node(node) {}
 
 		friend class SortedSet<T, Compare> ;
 		Node<T>* node;
@@ -141,8 +141,8 @@ public:
 	 *  Iterator pointing to the first element, or if set is empty -
 	 *  	to the end of set
 	 */
-	Iterator begin() const {
-		return Iterator(first);
+	iterator begin() const {
+		return iterator(first);
 	}
 	
 	/* Sets Iterator to the end of set.
@@ -151,8 +151,8 @@ public:
 	 * return:
 	 *  Iterator pointing to the end of set.
 	 */
-	Iterator end() const {
-		return Iterator();
+	iterator end() const {
+		return iterator();
 	}
 	
 	/* Searches the set for an item, that equals <element>.
@@ -162,8 +162,8 @@ public:
 	 *  Iterator pointing to the <element>, if <element> found
 	 *  Iterator pointing to the end of set if <element> not found
 	 */
-	Iterator find(const T& element) const {
-		Iterator this_end = end(), current=begin();
+	iterator find(const T& element) const {
+		iterator this_end = end(), current=begin();
 		for(; current != this_end && Compare()(*current, element); ++current);
 		if (current == this_end || Compare()(element, *current)) {
 			return this_end;
@@ -194,7 +194,7 @@ public:
 		if (!Compare()(*(first->data), element)) {
 			return false;
 		}
-		Iterator this_end = end(), previous = begin(), iterator = begin();
+		iterator this_end = end(), previous = begin(), iterator = begin();
 		++iterator;
 		while (iterator != this_end && Compare()(*iterator, element)) {
 			++previous;
@@ -216,7 +216,7 @@ public:
 	 * false - if <element> has not been found
 	 */
 	bool remove(const T& element) {
-		Iterator this_end = end(), previous = begin(), iterator = begin();
+		iterator this_end = end(), previous = begin(), iterator = begin();
 		if (previous == this_end) {
 			return false;
 		}
@@ -244,7 +244,7 @@ public:
 	 */
 	int size() const {
 		int count = 0;
-		for (Iterator this_end = end(), current = begin(); current != this_end;
+		for (iterator this_end = end(), current = begin(); current != this_end;
 				++current) {
 			count++;
 		}

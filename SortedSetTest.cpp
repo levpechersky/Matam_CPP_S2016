@@ -79,7 +79,7 @@ bool testIteratorCopyAndAssignment(){
 		set.insert(i);
 	}
 	//Test copy C'tor
-	SortedSet<Int, IntCompare>::Iterator it_1(set.begin()), end(set.end());
+	SortedSet<Int, IntCompare>::iterator it_1(set.begin()), end(set.end());
 	ASSERT_EQUALS(1, *it_1);
 	ASSERT_NOT_EQUALS(end, it_1);
 	it_1++;
