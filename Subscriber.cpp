@@ -40,7 +40,7 @@ void Subscriber::receiveMessage(const string& message, const Topic& t,
 	if (!topicExist(t)) {
 		throw NonSubscribedTopic();
 	}
-	messagesSink << "Topic: " << t << ". Sender: " << sender.getId()
-			<< ". Receiver: " << getId() << ". Message: " << message
+	messagesSink << "Topic: " << t << ". Sender: #" << sender.getId()
+			<< ". Receiver: #" << getId() << ". Message: " << message
 			<< endl;
 }
