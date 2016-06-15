@@ -99,28 +99,6 @@ class Broker: public BrokerIfc {
 	virtual void publishMessage(const Topic& t, const std::string& message,
 			const Client& sender) const;
 
-	/* The function sends a control message from Broker to all Subscribers/ Publishers
-     * that registered / posted to any of Topics list.
-     *
-     * @param list- list of topic.
-     * @param str- control message.
-	 *
-	 * @Return:
-	 *  none
-	 */
-	void sendMaintenanceMessageAny(std::list<Topic> list,std::string str);
-
-	/* The function sends a control message from Broker to Subscribers/ Publishers
-     * that registered / posted to all of Topics list.
-     *
-     * @param list- list of topic.
-     * @param str- control message.
-	 *
-	 * @Return:
-	 *  none
-	 */
-	void sendMaintenanceMessageAll(std::list<Topic> list,std::string str);
-
 	/* The function checks if a given client (Subscribers/ Publishers),
 	 * registered / posted to all of Topics list
 	 *
@@ -158,6 +136,28 @@ public:
 	 * 	reference to this.
 	 */
 	Broker& operator=(const Broker&) = default;
+
+	/* The function sends a control message from Broker to all Subscribers/ Publishers
+     * that registered / posted to any of Topics list.
+     *
+     * @param list- list of topic.
+     * @param str- control message.
+	 *
+	 * @Return:
+	 *  none
+	 */
+	void sendMaintenanceMessageAny(std::list<Topic> list,std::string str);
+
+	/* The function sends a control message from Broker to Subscribers/ Publishers
+     * that registered / posted to all of Topics list.
+     *
+     * @param list- list of topic.
+     * @param str- control message.
+	 *
+	 * @Return:
+	 *  none
+	 */
+	void sendMaintenanceMessageAll(std::list<Topic> list,std::string str);
 
 	/* Broker destructor.
 	 * Delete the Broker object (this).

@@ -46,5 +46,10 @@ bool pubSubTestExample() {
 
 int main() {
     RUN_TEST(pubSubTestExample);
+    Broker a;
+    {
+    Broker& b=a;
+    b.sendMaintenanceMessageAny(list<Topic>(),"aaa");
+    }
     return true;
 }
