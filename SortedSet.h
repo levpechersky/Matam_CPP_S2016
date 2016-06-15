@@ -17,17 +17,18 @@ public:
 	Node* next;
 
 	friend class SortedSet<T, Compare> ;
-	//constructor
+
+	//Constructors:
 	Node(const T &element) : data(new T(element)), next(nullptr) {}
-	//constructor
 	Node() : data(nullptr), next(nullptr) {}
-	//copy constructor
+
+	//Copy constructor:
 	Node(const Node& node) : data(new T(node.data)), next(nullptr) {}
-	//destructor
-	~Node() {
-		delete data;
-	}
-	//assignment operator (=):
+
+	//Destructor:
+	~Node() { delete data; }
+
+	//Assignment operator (=):
 	Node& operator=(const Node& node) {
 		T* temp = new T(node.data);
 		delete data;
@@ -52,7 +53,7 @@ public:
     	 * a new iterator object.
     	 *
     	 */
-    	Iterator(const Iterator& iterator) : node(iterator.node) {}//TODO pointer to the same arg
+    	Iterator(const Iterator& iterator) : node(iterator.node) {}
 
     	/* Iterator assignment operator (=):
          * Get const reference of a iterator object, and copy it to this.
@@ -68,9 +69,7 @@ public:
 		/* Iterator's destructor:
     	 * The function deletes the iterator.
     	 */
-		~Iterator() {
-			node = nullptr;
-		}
+		~Iterator() {}
 
        /**************Operators of iterator******************************/
 
@@ -101,7 +100,7 @@ public:
     	 * IMPORTANT: the function assumes the set iterator is not NULL.
     	 * 		hence, iterator must be checked before dereferencing.
     	 */
-		const T operator*() {
+		const T operator*() const {
 			return *(node->data);
 		}
 
@@ -109,7 +108,7 @@ public:
     	 * @param iterator: a const reference iterator to compare to.
     	 * return: boolean value indicates whether the iterator were equal or not.
     	 */
-		bool operator==(const Iterator& iterator) {
+		bool operator==(const Iterator& iterator) const {
 			return iterator.node == node;
 		}
 
@@ -117,21 +116,25 @@ public:
 		 * @param iterator: a const reference iterator to compare to.
 		 * return: boolean value indicates whether the iterator were not equal.
 		 */
-		bool operator!=(const Iterator& iterator) {
+		bool operator!=(const Iterator& iterator) const {
 			return !(*this == iterator);
 		}
 
+    private:
 		/* Iterator constructor:
+		 * Since user knows nothing about Node class, user isn't allowed
+		 * to use this constructor. Instead of it, begin() and end() methods
+		 * of SortedSet are provided.
 		 * @param node: a pointer to node, new iterator will point to.
 		 * 		if <node> is null, new iterator is considered pointing to end.
 		 * return: new Iterator.
 		 */
 		Iterator(Node<T>* node = nullptr) :	node(node) {}
 
-	private:
 		friend class SortedSet<T, Compare> ;
 		Node<T>* node;
-	};
+
+	};//********* End of Iterator class ****************************************
 	
 	/* Sets Iterator to the first element
 	 * return:
@@ -184,24 +187,24 @@ public:
 		}
 		if (Compare()(element, *(first->data))) { //All items in set are greater than <element> - insert first
 			Node<T>* tmp = first;
-			first=new Node<T>(element);
+			first = new Node<T>(element);
 			first->next = tmp;
 			return true;
 		}
-		if(!Compare()( *(first->data), element)){
+		if (!Compare()(*(first->data), element)) {
 			return false;
 		}
-		Iterator this_end = end(), previous = begin(), it = begin();
-		++it;
-		while (it != this_end && Compare()(*it, element)) {
+		Iterator this_end = end(), previous = begin(), iterator = begin();
+		++iterator;
+		while (iterator != this_end && Compare()(*iterator, element)) {
 			++previous;
-			++it;
+			++iterator;
 		}
-		if((it == this_end || Compare()(element, *it))){
-		  Node<T>* tmp = new Node<T>(element);
-		  tmp->next = previous.node->next;
-		  previous.node->next = tmp;
-		  return true;
+		if ((iterator == this_end || Compare()(element, *iterator))) {
+			Node<T>* tmp = new Node<T>(element);
+			tmp->next = previous.node->next;
+			previous.node->next = tmp;
+			return true;
 		}
 		return false;
 	}
@@ -212,28 +215,28 @@ public:
 	 * true - if <element> found and has been removed
 	 * false - if <element> has not been found
 	 */
-    bool remove(const T& element){
-    	Iterator this_end = end(), previous = begin(), it=begin();
-		if(previous == this_end){
+	bool remove(const T& element) {
+		Iterator this_end = end(), previous = begin(), iterator = begin();
+		if (previous == this_end) {
 			return false;
 		}
-		++it;
-		if( !Compare()(*previous, element) && !Compare()(element, *previous)){
-			first = it.node;
+		++iterator;
+		if (!Compare()(*previous, element) && !Compare()(element, *previous)) {
+			first = iterator.node;
 			delete previous.node;
 			return true;
 		}
-		while (it != this_end && Compare()(*it, element)) {
+		while (iterator != this_end && Compare()(*iterator, element)) {
 			++previous;
-			++it;
+			++iterator;
 		}
-		if(it != this_end && !Compare()(element, *it)){
-			previous.node->next = it.node->next;
-			delete it.node;
+		if (iterator != this_end && !Compare()(element, *iterator)) {
+			previous.node->next = iterator.node->next;
+			delete iterator.node;
 			return true;
 		}
-    	return false;
-    }
+		return false;
+	}
 
 	/*
 	 * return:
@@ -241,8 +244,8 @@ public:
 	 */
 	int size() const {
 		int count = 0;
-		for(Iterator this_end = end(), current=begin();current != this_end;
-				++current){
+		for (Iterator this_end = end(), current = begin(); current != this_end;
+				++current) {
 			count++;
 		}
 		return count;
@@ -290,18 +293,22 @@ private:
 	}
 
 	/* Copies Linked List */
-	static Node<T>* copyList(Node<T>* to_copy) {
-		Node<T>* temp = new Node<T>(*(to_copy->data));
-		Node<T>* helper2 = temp;
-		Node<T>* helper1 = to_copy->next;
-		while (helper1) {
-			helper2->next = new Node<T>(*(helper1->data));
-			helper2 = helper2->next;
-			helper1 = helper1->next;
+	static Node<T>* copyList(Node<T>* original) {
+		if(!original){
+			return nullptr;
 		}
-		return temp;
+		Node<T>* copy = new Node<T>(*(original->data));
+		Node<T>* helper_2 = copy;
+		Node<T>* helper_1 = original->next;
+		while (helper_1) {
+			helper_2->next = new Node<T>(*(helper_1->data));
+			helper_2 = helper_2->next;
+			helper_1 = helper_1->next;
+		}
+		return copy;
 	}
-};
+
+};//****************** End of SortedSet class **********************************
 
 /*
  * Union of sets A and B is defined as a set of objects that belong to A or B
@@ -310,21 +317,21 @@ private:
  * new SortedSet, containing union of two sets.
  */
 template<class T, class Compare>
-SortedSet<T, Compare> operator|(const SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	SortedSet<T, Compare> copy(set1);
-	auto this_end = set2.end(), it = set2.begin();
-	for (; it != this_end; it++) {
-		copy.insert(*it);
+SortedSet<T, Compare> operator|(const SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	SortedSet<T, Compare> result(set_1);
+	auto this_end = set_2.end(), iterator = set_2.begin();
+	for (; iterator != this_end; iterator++) {
+		result.insert(*iterator);
 	}
-	return copy;
+	return result;
 }
 /* Same as described above, with assignment to the left operand
  * Returns reference to the left operand                                      */
 template<class T, class Compare>
-SortedSet<T, Compare>& operator|=(SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	return set1 = set1 | set2;
+SortedSet<T, Compare>& operator|=(SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	return set_1 = set_1 | set_2;
 }
 
 /*
@@ -335,23 +342,23 @@ SortedSet<T, Compare>& operator|=(SortedSet<T, Compare>& set1,
  * new SortedSet, containing an intersection of two sets.
  */
 template<class T, class Compare>
-SortedSet<T, Compare> operator&(const SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	SortedSet<T, Compare> copy(set1), to_return;
-	auto this_end = set2.end(), it = set2.begin();
-	for (; it != this_end; it++) {
-		if (!copy.insert(*it)) {
-			to_return.insert(*it);
+SortedSet<T, Compare> operator&(const SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	SortedSet<T, Compare> copy(set_1), result;
+	auto this_end = set_2.end(), iterator = set_2.begin();
+	for (; iterator != this_end; iterator++) {
+		if (!copy.insert(*iterator)) {
+			result.insert(*iterator);
 		}
 	}
-	return to_return;
+	return result;
 }
 /* Same as described above, with assignment to the left operand
  * Returns reference to the left operand                                      */
 template<class T, class Compare>
-SortedSet<T, Compare>& operator&=(SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	return set1 = set1 & set2;
+SortedSet<T, Compare>& operator&=(SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	return set_1 = set_1 & set_2;
 }
 
 /* Creates new set, containing an elements, which are contained in first
@@ -362,23 +369,23 @@ SortedSet<T, Compare>& operator&=(SortedSet<T, Compare>& set1,
  * new SortedSet, as described above
  */
 template<class T, class Compare>
-SortedSet<T, Compare> operator-(const SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	SortedSet<T, Compare> copy(set2), to_return;
-	auto this_end = set1.end(), it = set1.begin();
-	for (; it != this_end; it++) {
-		if (copy.insert(*it)) {
-			to_return.insert(*it);
+SortedSet<T, Compare> operator-(const SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	SortedSet<T, Compare> copy(set_2), result;
+	auto this_end = set_1.end(), iterator = set_1.begin();
+	for (; iterator != this_end; iterator++) {
+		if (copy.insert(*iterator)) {
+			result.insert(*iterator);
 		}
 	}
-	return to_return;
+	return result;
 }
 /* Same as described above, with assignment to the left operand
  * Returns reference to the left operand                                      */
 template<class T, class Compare>
-SortedSet<T, Compare>& operator-=(SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	return set1 = set1 - set2;
+SortedSet<T, Compare>& operator-=(SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	return set_1 = set_1 - set_2;
 }
 
 /* Creates new set, containing an elements, which are contained in one of
@@ -390,16 +397,16 @@ SortedSet<T, Compare>& operator-=(SortedSet<T, Compare>& set1,
  * new SortedSet, as described above
  */
 template<class T, class Compare>
-SortedSet<T, Compare> operator^(const SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	return (set1 - set2) | (set2 - set1);
+SortedSet<T, Compare> operator^(const SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	return (set_1 - set_2) | (set_2 - set_1);
 }
 /* Same as described above, with assignment to the left operand
  * Returns reference to the left operand                                      */
 template<class T, class Compare>
-SortedSet<T, Compare>& operator^=(SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	return set1 = set1 ^ set2;
+SortedSet<T, Compare>& operator^=(SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	return set_1 = set_1 ^ set_2;
 }
 
 /* Two sets are equal if and only if they have the same elements.
@@ -409,15 +416,17 @@ SortedSet<T, Compare>& operator^=(SortedSet<T, Compare>& set1,
  * false - otherwise
  */
 template<class T, class Compare>
-bool operator==(const SortedSet<T, Compare>& set1,
-		const SortedSet<T, Compare>& set2) {
-	auto it1 = set1.begin(), it2 = set2.begin(), end = set1.end();
-	while (it1 != end && it2 != end) {
-		if (Compare()(*it1, *it2) || Compare()(*it2++, *it1++)) {
+bool operator==(const SortedSet<T, Compare>& set_1,
+		const SortedSet<T, Compare>& set_2) {
+	auto iterator_1 = set_1.begin(), iterator_2 = set_2.begin(),
+			end = set_1.end();
+	while (iterator_1 != end && iterator_2 != end) {
+		if (Compare()(*iterator_1, *iterator_2) ||
+				Compare()(*iterator_2++, *iterator_1++)) {
 			return false;
 		}
 	}
-	if (it1 != end || it2 != end) {
+	if (iterator_1 != end || iterator_2 != end) {
 		return false;
 	}
 	return true;

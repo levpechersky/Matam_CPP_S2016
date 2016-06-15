@@ -31,7 +31,6 @@ static Apartment::SquareType** createSquaresTilesPattern(int length, int width,
 	for (int i = 0; i < length; i++) {
 		for (int j = 0; j < width; j++) {
 			if (j % tile_width == 0 || i % tile_length == 0) {
-				//tiles pattern, with rooms of 4x3
 				squarePtr[i][j] = Apartment::WALL;
 			}
 		}
@@ -269,10 +268,10 @@ bool testOperatorLess() {
 	 apartment_4x100(tiles_board, length, width, 400),// ratio: 100 per meter
 	 apartment_4x200(tiles_board, length, width, 800);// ratio: 200 per meter
 	ASSERT_EQUALS(false, apartment_00 < apartment_00);
-	ASSERT_EQUALS(false,  apartment_00 < apartment_inf_1);
-	ASSERT_EQUALS(false, apartment_00 < apartment_9x100);
+	ASSERT_EQUALS(true,  apartment_00 < apartment_inf_1);
+	ASSERT_EQUALS(true, apartment_00 < apartment_9x100);
 	ASSERT_EQUALS(false, apartment_inf_2 < apartment_00);
-	ASSERT_EQUALS(false, apartment_inf_1 < apartment_inf_2);
+	ASSERT_EQUALS(true, apartment_inf_1 < apartment_inf_2);
 	ASSERT_EQUALS(false, apartment_inf_2 < apartment_inf_1);
 	ASSERT_EQUALS(false, apartment_inf_2 < apartment_4x100);
 	ASSERT_EQUALS(false, apartment_9x100 < apartment_00);

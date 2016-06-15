@@ -9,12 +9,6 @@
 using std::endl;
 using std::cout;
 
-struct strCompare{
-	bool operator()(const std::string& s1, const std::string& s2){
-		return s1.compare(s2) < 0;
-	}
-};
-
 struct Int {
     int i;
 
@@ -22,7 +16,6 @@ struct Int {
 
     operator int() const { return i; }
 };
-
 class IntCompare {
 public:
     bool operator()(const Int& i1, const Int& i2) const {
@@ -37,6 +30,8 @@ public:
 //For example: strGenerator(77381556) returns std::string "string"
 // 77381556 = 18 + 19*26 + 17*26^2 + 8*26^3 + 13*26^4 + 6*26^5
 //            s     t       r        i         n        g
+//Also, smaller seed not necessarily will make "smaller" string, in terms of
+//strings comparison operators.
 static std::string string(int seed){
 	char out_str[8]; //maximal int value is nearly 26^6.6, and 1 more char for '\0'
 	int i = 0;
@@ -48,7 +43,99 @@ static std::string string(int seed){
 	out_str[i] = '\0';
 	return std::string(out_str);
 }
+class strCompare{
+public:
+	bool operator()(const std::string& s1, const std::string& s2){
+		return s1.compare(s2) < 0;
+	}
+};
 
+bool testIteratorCopyAndAssignment(){
+	const int upper_bound = 10;
+	SortedSet<Int, IntCompare> set;
+	for(int i=upper_bound; i>0; i--){
+		set.insert(i);
+	}
+	//Test copy C'tor
+	SortedSet<Int, IntCompare>::Iterator it_1(set.begin()), end(set.end());
+	ASSERT_EQUALS(1, *it_1);
+	ASSERT_NOT_EQUALS(end, it_1);
+	it_1++;
+	ASSERT_NOT_EQUALS(1, *it_1);
+	auto it_2(it_1);
+	ASSERT_EQUALS(it_1, it_2);
+	//Test assignment
+	auto it_3(end);
+	ASSERT_NO_THROW(it_3 = it_2);
+	ASSERT_EQUALS(it_3, it_2);
+	it_1++;
+	ASSERT_NO_THROW(it_1 = it_3 = it_2 = set.begin());
+	ASSERT_EQUALS(it_1, it_2);
+	ASSERT_EQUALS(it_1, it_3);
+	return true;
+}
+
+bool testIteratorIncrements(){
+	const int upper_bound = 4;//do not change
+	SortedSet<Int, IntCompare> set;
+	for(int i=upper_bound; i>0; i--){
+		set.insert(i);
+	}
+	auto it_1(set.begin()), it_2(it_1++);
+	ASSERT_EQUALS(set.begin(), it_2);
+	ASSERT_NOT_EQUALS(it_1, it_2);
+	it_2 = ++it_1;
+	ASSERT_EQUALS(it_1, it_2);
+	ASSERT_NO_THROW(it_2++);
+	ASSERT_NO_THROW(++it_1);
+	ASSERT_EQUALS(true, (++it_1 == set.end()));
+	ASSERT_EQUALS(false, (it_2++ == set.end()));
+	ASSERT_EQUALS(it_2, set.end());
+	return true;
+}
+
+bool testIteratorEquality(){
+	const int upper_bound = 4;
+	SortedSet<Int, IntCompare> set;
+	for(int i=upper_bound; i>0; i--){
+		set.insert(i);
+	}
+	auto it_1(set.begin()), it_2(set.find(2));
+	ASSERT_NOT_EQUALS(set.begin(), it_2);
+	++it_1;//should point at "2"
+	ASSERT_EQUALS(*it_1, *it_2);
+	ASSERT_EQUALS(true, (it_1 == it_2));
+	ASSERT_EQUALS(false, (it_1 != it_2));
+	it_1 = set.find(1);
+	it_2 = set.begin();
+	ASSERT_EQUALS(true, (it_1 == it_2));
+	ASSERT_EQUALS(false, (it_1 != it_2));
+	it_1 = ++(set.find(4));
+	it_2 = set.end();
+	ASSERT_EQUALS(true, (it_1 == it_2));
+	ASSERT_EQUALS(false, (it_1 != it_2));
+	it_1 = (set.find(4))++;
+	ASSERT_EQUALS(false, (it_1 == it_2));
+	ASSERT_EQUALS(true, (it_1 != it_2));
+	return true;
+}
+
+bool testIteratorDereference(){
+	SortedSet<Int, IntCompare> int_set;
+	for(int i=100; i>-10; i-=3){
+		ASSERT_EQUALS(true, int_set.insert(i));
+		auto iterator = int_set.begin();
+		ASSERT_EQUALS(i, *iterator);
+	}
+
+	SortedSet<std::string, strCompare> str_set;
+	for (int i = 5000; i > 500; i -= 4) {
+		ASSERT_EQUALS(true, str_set.insert(string(i)));
+		auto iterator = str_set.find(string(i));
+		ASSERT_EQUALS(string(i), *iterator);
+	}
+	return true;
+}
 
 bool testSortedSetCtor() {
 	ASSERT_NO_THROW((SortedSet<int>()));
@@ -97,7 +184,16 @@ bool testSortedSetAssignOperator() {
 	ASSERT_EQUALS(true, str_original.remove(string(upper_bound)));
 	ASSERT_NOT_EQUALS(original, copy);
 	ASSERT_NOT_EQUALS(str_original, str_copy);
-
+	//test sequential assignment
+	SortedSet<Int, IntCompare> S1, S2, S3;
+	S1 = S2 = S3 = original;
+	ASSERT_EQUALS(original, S1);
+	ASSERT_EQUALS(original, S2);
+	ASSERT_EQUALS(original, S3);
+	//test empty set assignment
+	SortedSet<Int, IntCompare> empty;
+	original = empty;
+	ASSERT_EQUALS(empty, original);
 	return true;
 }
 
@@ -257,6 +353,8 @@ bool testUnion(){//Also tests Union Assignment
 		j++;
 	}
 
+	ASSERT_NO_THROW(set_1 |= set_2 |= set_union);
+
 	SortedSet<std::string, strCompare> str_set_1, str_set_2;
 	for (int i = 0; i <= 500; i += 2) {
 		ASSERT_EQUALS(true, str_set_1.insert(string(i)));
@@ -294,6 +392,8 @@ bool testIntersection(){//Also tests Intersection Assignment
 		ASSERT_EQUALS(j, *it);
 		j++;
 	}
+
+	ASSERT_NO_THROW(set_1 &= set_2 &= set_intersection);
 
 	SortedSet<std::string, strCompare> str_set_1, str_set_2;
 	for (int i = 1000; i <= 5000; i += 5) {
@@ -333,6 +433,8 @@ bool testRelativeComplement(){//Also tests Relative Complement Assignment
 		j+=2;
 	}
 
+	ASSERT_NO_THROW(set_1 -= set_2 -= result);
+
 	SortedSet<std::string, strCompare> str_set_1, str_set_2;
 	for (int i = 1000; i <= 5000; i += 5) {
 		ASSERT_EQUALS(true, str_set_1.insert(string(i)));
@@ -371,6 +473,8 @@ bool testSymmetricDifference(){//Also tests Symmetric Difference Assignment
 		}
 	}
 
+	ASSERT_NO_THROW(set_1 ^= set_2 ^= result);
+
 	SortedSet<std::string, strCompare> str_set_1, str_set_2;
 	for (int i = 1000; i <= 5000; i += 5) {
 		ASSERT_EQUALS(true, str_set_1.insert(string(i)));
@@ -391,8 +495,51 @@ bool testSymmetricDifference(){//Also tests Symmetric Difference Assignment
 	return true;
 }
 
+bool comboTestEmptySets(){
+	const int upper_bound = 500;
+	const SortedSet<Int, IntCompare> empty;
+	SortedSet<Int, IntCompare> odd, even;
+	//odd and even are disjoint (non-intersecting) sets.
+	for(int i=0; i<=upper_bound; i++){
+		(i & 1) ? odd.insert(i) : even.insert(i);
+	}
+	SortedSet<Int, IntCompare> S1, S2;
+	//1. {} U {} = {}
+	S1 = S2 = empty;
+	ASSERT_EQUALS(empty, (S1 | S2));
+	//2. A U {} = A
+	S1 = odd | empty;
+	ASSERT_EQUALS(odd, S1);
+	//3. {} n {} = {}
+	S1 = S2 = empty;
+	ASSERT_EQUALS(empty, (S1 & S2));
+	//4. A n {} = {}
+	S1 = odd & empty;
+	ASSERT_EQUALS(empty, S1);
+	//5. For two Disjoint sets: A n B = {}
+	S1 = odd & even;
+	ASSERT_EQUALS(empty, S1);
+	//6. A - {} = A
+	S1 = odd - empty;
+	ASSERT_EQUALS(odd, S1);
+	//7. {} - {} = {}
+	S1 = S2 = empty;
+	ASSERT_EQUALS(empty, (S1 - S2));
+	//8. {} - A = {}
+	S1 = empty - even;
+	ASSERT_EQUALS(empty, S1);
+	//9. {} ^ {} = {}
+	S1 = S2 = empty;
+	ASSERT_EQUALS(empty, (S1 ^ S2));
+	//10. {} ^ A = A ^ {} = A
+	S1 = empty ^ odd;
+	S2 = odd ^ empty;
+	ASSERT_EQUALS(S1, S2);
+	ASSERT_EQUALS(S1, odd);
+	return true;
+}
 
-bool testComboTest(){
+bool comboTestTheorems(){
 	const int upper_bound = 500;
 	//checking some theorems of set theory
 	SortedSet<Int, IntCompare> A, B, C;
@@ -432,19 +579,24 @@ bool testComboTest(){
 	return true;
 }
 
-//int main() {
-//	RUN_TEST(testSortedSetCtor);
-//	RUN_TEST(testSortedSetCopyCtor);
-//	RUN_TEST(testSortedSetAssignOperator);
-//	RUN_TEST(testBeginEnd);
-//	RUN_TEST(testSize);
-//	RUN_TEST(testInsert);
-//	RUN_TEST(testRemove);
-//	RUN_TEST(testFind);
-//	RUN_TEST(testUnion);
-//	RUN_TEST(testIntersection);
-//	RUN_TEST(testRelativeComplement);
-//	RUN_TEST(testSymmetricDifference);
-//	RUN_TEST(testComboTest);
-//	return 0;
-//}
+int main() {
+	RUN_TEST(testIteratorCopyAndAssignment);
+	RUN_TEST(testIteratorIncrements);
+	RUN_TEST(testIteratorEquality);
+	RUN_TEST(testIteratorDereference);
+	RUN_TEST(testSortedSetCtor);
+	RUN_TEST(testSortedSetCopyCtor);
+	RUN_TEST(testSortedSetAssignOperator);
+	RUN_TEST(testBeginEnd);
+	RUN_TEST(testSize);
+	RUN_TEST(testInsert);
+	RUN_TEST(testRemove);
+	RUN_TEST(testFind);
+	RUN_TEST(testUnion);
+	RUN_TEST(testIntersection);
+	RUN_TEST(testRelativeComplement);
+	RUN_TEST(testSymmetricDifference);
+	RUN_TEST(comboTestEmptySets);
+	RUN_TEST(comboTestTheorems);
+	return true;
+}

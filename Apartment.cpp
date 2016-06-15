@@ -4,14 +4,14 @@
 //**********************Static functions of the Class***************************
 //******************************************************************************
 Apartment::SquareType** Apartment::allocateBoard(int length, int width) {
-	SquareType**layout = new SquareType*[length];
+	SquareType** layout = new SquareType*[length];
 	for (int i = 0; i < length; i++) {
 		layout[i] = new SquareType[width];
 	}
 	return layout;
 }
 
-Apartment::SquareType** Apartment::copyBoard(Apartment::SquareType**squares,
+Apartment::SquareType** Apartment::copyBoard(Apartment::SquareType** squares,
 		int length, int width) {
 	SquareType**layout = allocateBoard(length, width);
 	for (int i = 0; i < length; i++) {
@@ -26,7 +26,7 @@ Apartment::SquareType** Apartment::copyBoard(Apartment::SquareType**squares,
 	return layout;
 }
 
-void Apartment::destroyBoard(Apartment::SquareType**squares, int length) {
+void Apartment::destroyBoard(Apartment::SquareType** squares, int length) {
 	for (int i = 0; i < length; i++) {
 		delete[] squares[i];
 	}
@@ -130,17 +130,8 @@ Apartment::SquareType& Apartment::operator()(int row, int col) {
 bool operator<(const Apartment& apartment_1, const Apartment& apartment_2) {
 	int area_1(apartment_1.getTotalArea()), area_2(apartment_2.getTotalArea()),
 			price_1(apartment_1.getPrice()), price_2(apartment_2.getPrice());
-	if (area_1 != 0 && area_2 != 0) {
-		int ratio_1(price_1 * area_2), ratio_2(price_2 * area_1);
-		if (ratio_1 != ratio_2) {
-			return (ratio_1 < ratio_2);
-		}
-	} else if (area_1 == 0) {
-		return false;
-	} else if (area_2 == 0) {
-		return price_2 != 0;
-	}
-	return price_1 < price_2;
+	return (price_1 * area_2 == price_2 * area_1) ?
+			price_1 < price_2 : price_1 * area_2 < price_2 * area_1;
 }
 
 Apartment operator+(const Apartment& apartment_1,
