@@ -21,18 +21,18 @@ void Subscriber::subscribeToTopic(const Topic& t) {
 }
 
 void Subscriber::unsubscribeToTopic(const Topic& t) {
-	if(!set.remove(t)){
+	if (!set.remove(t)) {
 		throw NonSubscribedTopic();
-	}else{
+	} else {
 		broker.unsubscribeToTopic(*this, t);
 	}
 }
 
-void Subscriber::unsubscribeAll(){
+void Subscriber::unsubscribeAll() {
 	auto i = set.begin(), end = set.end();
-	while(i != end){
+	while (i != end) {
 		unsubscribeToTopic(*i);
-		i=set.begin();
+		i = set.begin();
 	}
 }
 void Subscriber::receiveMessage(const string& message, const Topic& t,
@@ -41,6 +41,5 @@ void Subscriber::receiveMessage(const string& message, const Topic& t,
 		throw NonSubscribedTopic();
 	}
 	messagesSink << "Topic: " << t << ". Sender: #" << sender.getId()
-			<< ". Receiver: #" << getId() << ". Message: " << message
-			<< endl;
+			<< ". Receiver: #" << getId() << ". Message: " << message << endl;
 }

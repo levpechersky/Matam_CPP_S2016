@@ -26,11 +26,11 @@ void Publisher::unpublishTopic(const Topic& t) {
 	}
 }
 
-void Publisher::unpublishAll(){
+void Publisher::unpublishAll() {
 	auto i = set.begin(), end = set.end();
-	while(i != end){
+	while (i != end) {
 		unpublishTopic(*i);
-		i=set.begin();
+		i = set.begin();
 	}
 }
 
