@@ -76,15 +76,15 @@ public:
 
     /* Prints maintenance message to messagesSink.
      *
-     * @param- s is message to print.
+     * @param s - is message to print.
      *
-     * Message format: "Client #<id> received maintenance message: <message>"
-     * @param of message-
-     * 	id- is this client's id.
-     * 	message- is received parameter.
+     * Message format: "Client #<id> received maintenance message: <message>",
+     * where:
+     * 	id - is this client's id.
+     * 	message - is received parameter.
      *
      * @Return:
-	 *  non.
+	 *  none
      */
     void receiveMaintenanceMessage(const std::string& s) const;
 

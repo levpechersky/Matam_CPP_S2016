@@ -465,7 +465,7 @@ bool testSendReceiveMessage() {
 	Subscriber s3(1, broker, ss);
 	EncryptionSubscriber es4(2, broker, '$', ss);
 	EncryptionSubscriber es5(2, broker, '*', ss);
-	Subscriber s6(3, broker, empty); //subscribed to unexisting topic
+	Subscriber s6(3, broker, ss); //subscribed to unexisting topic
 
 	EncryptionPublisher ep7(2, broker, '$', ss);
 	EncryptionPublisher ep8(0, broker, '*', ss);

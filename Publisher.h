@@ -38,40 +38,40 @@ public:
 	 * to the given topic, will reach to all the registered Subscribers
 	 * ( to this topic ).
 	 *
-	 * @param t- topic to send message.
+	 * @param t - topic to send message.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void publishTopic(const Topic& t);
 
 	/* After activating this method, Publisher can not send messages to This topic.
 	 *
-	 * @param t-topic that Publisher can not send messages to him.
+	 * @param t - topic that Publisher can not send messages to him.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void unpublishTopic(const Topic& t);
 
 	/* After activation method the Publisher can not send messages to any topic.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void unpublishAll();
 
 	/* The function passes a message to all Subscribers that registered to topic.
 	 *
-	 * @param message- the message to be sent about the given topic.
-	 * @param t- the topic of the message.
+	 * @param message - the message to be sent about the given topic.
+	 * @param t - the topic of the message.
 	 *
 	 *  Throws:
      *  ClientException::NonPublishedTopic if the message has reached
      *  with topic that not made for him publishTopic.
      *
      * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void sendMessage(const std::string& message, const Topic& t) const;
 

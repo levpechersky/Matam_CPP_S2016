@@ -41,21 +41,21 @@ public:
 	/* After activating this method, each message sent by Publisher
 	 * to the given topic, will reach to Subscriber.
 	 *
-	 * @param t- topic to send message.
+	 * @param t - topic to send message.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void subscribeToTopic(const Topic& t);
 
 	/* After activating this method, messages sent to this topic
 	 * from the publisher does not reach the subscriber.
 	 *
-	 * @param t- topic, messages sent to this topic from the publisher
+	 * @param t - topic, messages sent to this topic from the publisher
 	 * does not reach the subscriber.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void unsubscribeToTopic(const Topic& t);
 
@@ -63,30 +63,29 @@ public:
 	 * to the subscriber from any publisher.
 	 *
 	 * @Return:
-	 *  non.
+	 *  none
 	 */
 	virtual void unsubscribeAll();
 
     /* Prints message to messagesSink.
      *
-     * @param message- message to print to messagesSink.
-     * @param t- the topic of the message.
-     * @param sender-the Publisher that publish the message.
+     * @param message - message to print to messagesSink.
+     * @param t - the topic of the message.
+     * @param sender - the Publisher that publish the message.
      *
      * Message format: “Topic: <topic>. Sender: #<sender_id>. Receiver: #<receiver_id>.
      * Message: <message_content>”.
-     * @param of message-
-     * receiver_id- the id of Subscriber that received the message.
-     * sender_id- the is of the Publisher that publish the message.
-     * topic-subject to registered subscriber.
-     * message_content-The message was sent regarding the Publisher.
+     * 		receiver_id- the id of Subscriber that received the message.
+     * 		sender_id- the is of the Publisher that publish the message.
+     * 		topic-subject to registered subscriber.
+     * 		message_content-The message was sent regarding the Publisher.
      *
      * Throws:
      *  ClientException::NonSubscribedTopic if the message has reached
      *  with topic that not made for him subscription.
      *
      * @Return:
-	 *  non.
+	 *  none
      */
 	virtual void receiveMessage(const string& message, const Topic& t,
 			const Client& sender) const;

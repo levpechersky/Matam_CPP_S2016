@@ -30,7 +30,7 @@ class Broker: public BrokerIfc {
 					c1.getId() < c2.getId() :
 					c1.getPriority() < c2.getPriority();
 		}
-		bool operator()(const Client* c1, const Client* c2) const {
+		bool operator()(const Client* c1, const Client* c2) const {//TODO may be implemented uisng reference version
 			return c1->getPriority() == c2->getPriority() ?
 					c1->getId() < c2->getId() :
 					c1->getPriority() < c2->getPriority();
@@ -43,8 +43,8 @@ class Broker: public BrokerIfc {
 	/* After activating this method, each message sent by Publisher
 	 * to the given topic, will reach to Subscriber.
 	 *
-	 * @param t- topic to send message.
-	 * @param sub- Subscriber to send messages on a given topic.
+	 * @param t - topic to send message.
+	 * @param sub - Subscriber to send messages on a given topic.
      *
 	 * @Return:
 	 *  none
@@ -54,10 +54,10 @@ class Broker: public BrokerIfc {
 	/* After activating this method, messages sent to this topic
 	 * from the publisher does not reach the subscriber.
 	 *
-	 * @param t- topic, messages sent to this topic from the publisher
-	 * does not reach the subscriber.
+	 * @param t - topic, messages sent to this topic from the publisher
+	 * 	does not reach the subscriber.
 	 * @param sub-subscriber that the messages sent to the gievn topic,
-	 * will not reach to him.
+	 * 	will not reach to him.
 	 *
 	 * @Return:
 	 *  none
@@ -68,8 +68,8 @@ class Broker: public BrokerIfc {
 	 * to the given topic, will reach to all the registered Subscribers
 	 * ( to this topic ).
 	 *
-	 * @param t- topic to send message.
-	 * @param pub- a Publisher would send a message to the given topic.
+	 * @param t - topic to send message.
+	 * @param pub - a Publisher would send a message to the given topic.
 	 *
 	 * @Return:
 	 *  none
@@ -78,8 +78,8 @@ class Broker: public BrokerIfc {
 
 	/* After activating this method, Publisher can not send messages to This topic.
 	 *
-	 * @param t-topic that Publisher can not send messages to him.
-	 * @param pub-a Publisher that could not send a message to the given topic.
+	 * @param t - topic that Publisher can not send messages to him.
+	 * @param pub - a Publisher that could not send a message to the given topic.
 	 *
 	 * @Return:
 	 *  none
@@ -89,9 +89,9 @@ class Broker: public BrokerIfc {
 	/* The function sends a message from a given Publisher to all
 	 * Subscriber that registered on a given topic.
 	 *
-     * @param message- message to send.
-     * @param t- the topic of the message.
-     * @param sender-the Publisher that publish the message.
+     * @param message - message to send.
+     * @param t - the topic of the message.
+     * @param sender -the Publisher that publish the message.
 	 *
 	 * @Return:
 	 *  none
@@ -103,11 +103,11 @@ class Broker: public BrokerIfc {
 	 * registered / posted to all of Topics list
 	 *
 	 * @Return:
-	 *  true- if the client (Subscribers/ Publishers), registered / posted
-	 *  to all of Topics list.
-	 *  false-otherwise.
+	 *  true - if the client (Subscribers/ Publishers), registered / posted
+	 *  	to all of Topics list.
+	 *  false - otherwise.
 	 */
-	static bool allTopicsMatch(const Client* client,std::list<Topic> list);
+	static bool allTopicsMatch(const Client* client, std::list<Topic> list);
 
 public:
 
@@ -140,24 +140,24 @@ public:
 	/* The function sends a control message from Broker to all Subscribers/ Publishers
      * that registered / posted to any of Topics list.
      *
-     * @param list- list of topic.
-     * @param str- control message.
+     * @param list - list of topic.
+     * @param str - control message.
 	 *
 	 * @Return:
 	 *  none
 	 */
-	void sendMaintenanceMessageAny(std::list<Topic> list,std::string str);
+	void sendMaintenanceMessageAny(std::list<Topic> list, std::string str);
 
 	/* The function sends a control message from Broker to Subscribers/ Publishers
      * that registered / posted to all of Topics list.
      *
-     * @param list- list of topic.
-     * @param str- control message.
+     * @param list - list of topic.
+     * @param str - control message.
 	 *
 	 * @Return:
 	 *  none
 	 */
-	void sendMaintenanceMessageAll(std::list<Topic> list,std::string str);
+	void sendMaintenanceMessageAll(std::list<Topic> list, std::string str);
 
 	/* Broker destructor.
 	 * Delete the Broker object (this).

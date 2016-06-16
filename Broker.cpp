@@ -6,7 +6,7 @@
 using std::pair;
 
 void Broker::subscribeToTopic(const Subscriber& sub,const Topic& t) {
-	auto it = subscriber_map.find(t);//TODO changed to auto
+	auto it = subscriber_map.find(t);
 	if (it == subscriber_map.end()) {
 		SortedSet<const Subscriber*, CompareClients> set;
 		set.insert(&sub);
@@ -19,7 +19,7 @@ void Broker::subscribeToTopic(const Subscriber& sub,const Topic& t) {
 }
 
 void Broker::unsubscribeToTopic(const Subscriber& sub, const Topic& t) {
-	auto it = subscriber_map.find(t);//TODO changed to auto
+	auto it = subscriber_map.find(t);
 	if (it == subscriber_map.end())	return;
 	subscriber_map.at(t).remove(&sub);
 	client_set.remove(&sub);
