@@ -54,6 +54,10 @@ public:
 	 * @param t - topic, messages sent to this topic from the publisher
 	 * does not reach the subscriber.
 	 *
+     * Throws:
+     *  ClientException::NonSubscribedTopic in case of trying to unsubscribe
+     *  from a topic, Subscriber was never subscribed to.
+     *
 	 * @Return:
 	 *  none
 	 */
@@ -62,6 +66,10 @@ public:
 	/* After activation method will not be accepted no message
 	 * to the subscriber from any publisher.
 	 *
+     * Throws:
+     *  ClientException::NonSubscribedTopic in case of trying to unsubscribe
+     *  from a topic, Subscriber was never subscribed to.
+     *
 	 * @Return:
 	 *  none
 	 */

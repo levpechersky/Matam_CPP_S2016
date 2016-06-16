@@ -49,6 +49,10 @@ public:
 	 *
 	 * @param t - topic that Publisher can not send messages to him.
 	 *
+	 *  Throws:
+     *  ClientException::NonPublishedTopic if trying to unpublish topic,
+     *  Publisher didn't publish before
+     *
 	 * @Return:
 	 *  none
 	 */
@@ -56,6 +60,10 @@ public:
 
 	/* After activation method the Publisher can not send messages to any topic.
 	 *
+	 *  Throws:
+     *  ClientException::NonPublishedTopic if trying to unpublish topic,
+     *  Publisher didn't publish before
+     *
 	 * @Return:
 	 *  none
 	 */

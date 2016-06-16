@@ -64,6 +64,10 @@ public:
      * 		topic-subject to registered subscriber.
      * 		message_content-The message was sent regarding the Publisher.
      *
+     * Throws:
+     *  ClientException::NonSubscribedTopic if the message has reached
+     *  with topic that not made for him subscription.
+     *
      * @Return:
 	 *  none
      */

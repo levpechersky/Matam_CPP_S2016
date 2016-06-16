@@ -55,6 +55,10 @@ public:
 	 * @param message - the message to be sent about the given topic.
 	 * @param t - the topic of the message.
      *
+	 *  Throws:
+     *  ClientException::NonPublishedTopic if the message has reached
+     *  with topic that not made for him publishTopic.
+     *
      * @Return:
 	 *  none
 	 */
