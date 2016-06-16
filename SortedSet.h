@@ -13,7 +13,7 @@ class SortedSet;
 template<class T, class Compare = std::less<T> >
 class Node {
 public:
-	T* data;
+	const T* const data;
 	Node* next;
 
 	friend class SortedSet<T, Compare> ;

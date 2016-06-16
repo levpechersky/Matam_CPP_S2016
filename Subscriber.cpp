@@ -23,18 +23,16 @@ void Subscriber::subscribeToTopic(const Topic& t) {
 void Subscriber::unsubscribeToTopic(const Topic& t) {
 	if (set.remove(t)) {
 		broker.unsubscribeToTopic(*this, t);
-	}
+	} //TODO else - throw  NonSubscribedTopic
 }
 
-void Subscriber::unsubscribeAll() {
+void Subscriber::unsubscribeAll(){
 	auto i = set.begin(), end = set.end();
-	while (i != end) {
-		Topic temp = *i;
-		set.remove(temp);
-		i = set.begin();
+	while(i != end){
+		unsubscribeToTopic(*i);
+		i=set.begin();
 	}
 }
-
 void Subscriber::receiveMessage(const string& message, const Topic& t,
 		const Client& sender) const {
 	if (!topicExist(t)) {
