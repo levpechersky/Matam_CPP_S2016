@@ -160,8 +160,23 @@ bool publishAndUnpublishTopicTest(){
     p1.publishTopic("Cat Videos");
     ASSERT_EQUALS(true,p1.topicExist("Cat Videos"));
     p1.publishTopic("Cat Videos");
-    p1.unpublishTopic("Cat Videos");
+    ASSERT_NO_THROW(p1.unpublishTopic("Cat Videos"));
     ASSERT_EQUALS(false,p1.topicExist("Cat Videos"));
+
+    p1.publishTopic("Dog Videos");
+    p1.publishTopic("Dog Videos");
+    ASSERT_EQUALS(true,p1.topicExist("Dog Videos"));
+    ASSERT_NO_THROW(p1.unpublishTopic("Dog Videos"));
+    ASSERT_EQUALS(false,p1.topicExist("Dog Videos"));
+
+    ASSERT_THROW(Client::NonPublishedTopic,p1.unpublishTopic("Dog Videos"));
+    ASSERT_THROW(Client::NonPublishedTopic,p1.unpublishTopic("Topic Does Not Exist"));
+
+    p1.publishTopic("Cat Videos");
+    p1.publishTopic("Cat Videos");
+    ASSERT_EQUALS(true,p1.topicExist("Cat Videos"));
+    ASSERT_NO_THROW(p1.unpublishTopic("Cat Videos"));
+    ASSERT_THROW(Client::NonPublishedTopic,p1.unpublishTopic("Cat Videos"));
 
 	return true;
 }
@@ -173,11 +188,26 @@ bool subscribeAndUnsubscribeToTopicTest(){
     s1.subscribeToTopic("Cat Videos");
     ASSERT_EQUALS(true,s1.topicExist("Cat Videos"));
     s1.subscribeToTopic("Cat Videos");
-    s1.unsubscribeToTopic("Cat Videos");
+    ASSERT_NO_THROW(s1.unsubscribeToTopic("Cat Videos"));
     ASSERT_EQUALS(false,s1.topicExist("Cat Videos"));
+
+    s1.subscribeToTopic("Dog Videos");
+    s1.subscribeToTopic("Dog Videos");
+    ASSERT_EQUALS(true,s1.topicExist("Dog Videos"));
+    ASSERT_NO_THROW(s1.unsubscribeToTopic("Dog Videos"));
+    ASSERT_EQUALS(false,s1.topicExist("Dog Videos"));
+
+    ASSERT_THROW(Client::NonSubscribedTopic,s1.unsubscribeToTopic("Dog Videos"));
+    ASSERT_THROW(Client::NonSubscribedTopic,s1.unsubscribeToTopic("Topic Does Not Exist"));
+
+    s1.subscribeToTopic("Dog Videos");
+    s1.subscribeToTopic("Dog Videos");
+    ASSERT_EQUALS(true,s1.topicExist("Dog Videos"));
+    ASSERT_NO_THROW(s1.unsubscribeToTopic("Dog Videos"));
+    ASSERT_THROW(Client::NonSubscribedTopic,s1.unsubscribeToTopic("Dog Videos"));
+
 	return true;
 }
-
 
 bool unsubscribeAllTest(){
     Broker broker;
@@ -190,6 +220,9 @@ bool unsubscribeAllTest(){
     ASSERT_EQUALS(false,s1.topicExist("Cat Videos"));
     ASSERT_EQUALS(false,s1.topicExist("FOOD magazine"));
     ASSERT_EQUALS(false,s1.topicExist("Butterflies Videos"));
+
+    ASSERT_THROW(Client::NonSubscribedTopic,s1.unsubscribeToTopic("Cat Videos"));
+    ASSERT_THROW(Client::NonSubscribedTopic,s1.unsubscribeToTopic("Topic Does Not Exist"));
 	return true;
 }
 bool unpublishAllTest(){
@@ -203,9 +236,11 @@ bool unpublishAllTest(){
     ASSERT_EQUALS(false,p1.topicExist("Cat Videos"));
     ASSERT_EQUALS(false,p1.topicExist("FOOD magazine"));
     ASSERT_EQUALS(false,p1.topicExist("Butterflies Videos"));
+
+    ASSERT_THROW(Client::NonPublishedTopic,p1.unpublishTopic("Cat Videos"));
+    ASSERT_THROW(Client::NonPublishedTopic,p1.unpublishTopic("Topic Does Not Exist"));
 	return true;
 }
-
 /*****************Broker sending a message Test*****************/
 /* the following tests, check all functions ends a message from
  * Broker to Publisher/ Subscriber.
@@ -420,34 +455,34 @@ bool maintenanceMessageAllTest(){
 	return true;
 }
 
-bool comboTest(){//TODO incomplete test
+bool testSendReceiveMessage() {
 	Broker broker;
 	stringstream ss, empty;
 
-	const Subscriber s0(0, broker, empty);//subscribed to nothing
+	const Subscriber s0(0, broker, empty); //subscribed to nothing
 	Subscriber s1(0, broker, ss);
 	Subscriber s2(1, broker, ss);
 	Subscriber s3(1, broker, ss);
 	EncryptionSubscriber es4(2, broker, '$', ss);
 	EncryptionSubscriber es5(2, broker, '*', ss);
-	Subscriber s6(3, broker, empty);//subscribed to unexisting topic
+	Subscriber s6(3, broker, empty); //subscribed to unexisting topic
 
 	EncryptionPublisher ep7(2, broker, '$', ss);
 	EncryptionPublisher ep8(0, broker, '*', ss);
-	Publisher p9(0, broker, ss);//Number of topics and subscribers
-	Publisher p10(3, broker, ss);//has topic, never publishes
-	const Publisher p11(1, broker, empty);//will never publish topic
-	Publisher p12(1, broker, ss);//publishes, no subscribers
+	Publisher p9(0, broker, ss); //Number of topics and subscribers
+	Publisher p10(3, broker, ss); //has topic, never publishes
+	const Publisher p11(1, broker, empty); //will never publish topic
+	Publisher p12(1, broker, ss); //publishes, no subscribers
 
 	/*Order: s0, s1, ep8, p9;
-			 s2, s3, p11;
-			 es4, es5, ep7;
-			 s6, p10;		 */
+	 s2, s3, p11;
+	 es4, es5, ep7;
+	 s6, p10;		 */
+//Setting up:
+	s6.subscribeToTopic("Easy and well-payed jobs"); //No such topic
+	p12.publishTopic("Matam Assignments"); //No subscribers
 
-	s6.subscribeToTopic("Easy and well-payed jobs");//No such topic
-	p12.publishTopic("Matam Assignments");//No subscribers
-
-	p10.publishTopic("Half-life 3");//Never sends messages
+	p10.publishTopic("Half-life 3"); //Never sends messages
 	s1.subscribeToTopic("Half-life 3");
 	s2.subscribeToTopic("Half-life 3");
 	s3.subscribeToTopic("Half-life 3");
@@ -472,13 +507,106 @@ bool comboTest(){//TODO incomplete test
 
 	s1.subscribeToTopic("Art");
 
-
+//Testing:
+	{ //Exceptions
+		ASSERT_THROW(Client::NonSubscribedTopic,
+				s1.receiveMessage("message", "No such topic", p9));
+		ASSERT_THROW(Client::NonSubscribedTopic,
+				es4.receiveMessage("message", "No such topic", p9));
+	}
+	{ //No subscribers, nothing printed, nothing changes
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		p12.sendMessage("Assignment 5 is coming!", "Matam Assignments");
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
+	{
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		string message = "Trump is reptiloid!";
+		ASSERT_NO_THROW(ep7.sendMessage(message, "Conspiracy"));
+		expected << "Topic: " << "Conspiracy" << ". Sender: #" << ep7.getId()
+				<< ". Receiver: #" << es4.getId() << ". Message: " << message
+				<< endl;
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
+	{
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		string message = "New HiddenWiki URL";
+		ASSERT_NO_THROW(es5.unsubscribeToTopic("TOR")); // <======Pub/Sub Change========
+		ASSERT_NO_THROW(es4.subscribeToTopic("TOR")); // <======Pub/Sub Change========
+		ASSERT_NO_THROW(ep7.sendMessage(message, "TOR"));
+		expected << "Topic: " << "TOR" << ". Sender: #" << ep7.getId()
+				<< ". Receiver: #" << es4.getId() << ". Message: " << message
+				<< endl;
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
+	{
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		string message = "USA didn't land on Moon!";
+		ASSERT_NO_THROW(es5.subscribeToTopic("Conspiracy")); // <======Pub/Sub Change========
+		ASSERT_NO_THROW(ep8.sendMessage(message, "Conspiracy"));
+		expected << "Topic: " << "Conspiracy" << ". Sender: #" << ep8.getId()
+				<< ". Receiver: #" << es4.getId() << ". Message: "
+				<< encode(encode(message, '*'), '$') << endl;
+		expected << "Topic: " << "Conspiracy" << ". Sender: #" << ep8.getId()
+				<< ". Receiver: #" << es5.getId() << ". Message: " << message
+				<< endl;
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
+	{
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		string message = "Bugatti Chiron";
+		ASSERT_NO_THROW(p9.sendMessage(message, "Cars"));
+		expected << "Topic: " << "Cars" << ". Sender: #" << p9.getId()
+				<< ". Receiver: #" << s3.getId() << ". Message: " << message
+				<< endl;
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
+	{
+		string message = "Jacek Yerka";
+		ASSERT_NO_THROW(p9.unpublishTopic("Art")); // <======Pub/Sub Change========
+		ASSERT_THROW(Client::NonPublishedTopic, p9.sendMessage(message, "Art"));
+	}
+	{
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		string message = "Avril Lavigne";
+		ASSERT_NO_THROW(s3.unsubscribeAll()); // <======Pub/Sub Change========
+		ASSERT_NO_THROW(p9.sendMessage("Avril Lavigne", "Girls"));
+		expected << "Topic: " << "Girls" << ". Sender: #" << p9.getId()
+				<< ". Receiver: #" << s1.getId() << ". Message: " << message
+				<< endl;
+		expected << "Topic: " << "Girls" << ". Sender: #" << p9.getId()
+				<< ". Receiver: #" << s2.getId() << ". Message: " << message
+				<< endl;
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
+	{
+		stringstream expected;
+		ss.str("");
+		ss.clear();
+		string message = "Street-Art in Tel Aviv";
+		ASSERT_NO_THROW(p10.sendMessage(message, "Art"));
+		expected << "Topic: " << "Art" << ". Sender: #" << p10.getId()
+				<< ". Receiver: #" << s1.getId() << ". Message: " << message
+				<< endl;
+		ASSERT_EQUALS(expected.str(), ss.str());
+	}
 	return true;
 }
 
 int main() {
     RUN_TEST(pubSubTestExample);
-
     RUN_TEST(clientConstructorTest);
     RUN_TEST(publisherConstructorTest);
     RUN_TEST(subscriberConstructorTest);
@@ -493,7 +621,7 @@ int main() {
     RUN_TEST(messagePriorityTest);
     RUN_TEST(maintenanceMessageAnyTest);
     RUN_TEST(maintenanceMessageAllTest);
-
+    RUN_TEST(testSendReceiveMessage);
     return true;
 }
 

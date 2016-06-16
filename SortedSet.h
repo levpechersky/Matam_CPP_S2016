@@ -100,7 +100,7 @@ public:
     	 * IMPORTANT: the function assumes the set iterator is not NULL.
     	 * 		hence, iterator must be checked before dereferencing.
     	 */
-		const T operator*() const {
+		T operator*() const {
 			return *(node->data);
 		}
 

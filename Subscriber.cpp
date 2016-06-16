@@ -21,9 +21,11 @@ void Subscriber::subscribeToTopic(const Topic& t) {
 }
 
 void Subscriber::unsubscribeToTopic(const Topic& t) {
-	if (set.remove(t)) {
+	if(!set.remove(t)){
+		throw NonSubscribedTopic();
+	}else{
 		broker.unsubscribeToTopic(*this, t);
-	} //TODO else - throw  NonSubscribedTopic
+	}
 }
 
 void Subscriber::unsubscribeAll(){

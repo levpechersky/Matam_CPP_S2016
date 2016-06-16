@@ -19,9 +19,11 @@ void Publisher::publishTopic(const Topic& t) {
 }
 
 void Publisher::unpublishTopic(const Topic& t) {
-	if (set.remove(t)) {
+	if (!set.remove(t)) {
+		throw NonPublishedTopic();
+	} else {
 		broker.unpublishTopic(*this, t);
-	}//TODO else - throw NonPublishedTopic
+	}
 }
 
 void Publisher::unpublishAll(){
@@ -31,6 +33,7 @@ void Publisher::unpublishAll(){
 		i=set.begin();
 	}
 }
+
 void Publisher::sendMessage(const string& message, const Topic& t) const {
 	if (!topicExist(t)) {
 		throw NonPublishedTopic();
