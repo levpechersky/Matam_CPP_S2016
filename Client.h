@@ -18,7 +18,7 @@ class Client {
 	 */
 	class strCompare{
 	public:
-		bool operator()(const std::string& s1, const std::string& s2){
+		bool operator()(const std::string& s1, const std::string& s2) const {
 			return s1.compare(s2) < 0;
 		}
 	};

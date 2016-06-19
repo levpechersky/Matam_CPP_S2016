@@ -246,7 +246,7 @@ bool unpublishAllTest(){
  * Broker to Publisher/ Subscriber.
 **************************************************************/
 
-string encode(string s, char key) {
+static string encode(string s, char key) {
 	string temp(s);
 	for (unsigned int i = 0; i < temp.length(); i++) {
 		temp[i] ^= key;
@@ -254,10 +254,10 @@ string encode(string s, char key) {
 	return temp;
 }
 
-void printExpectedAndActual(const stringstream& expected, const stringstream& actual) {
-	cout << "Expected:" << endl << expected.str() << endl
-			<< "Actual:" << endl << actual.str() << endl;
-}
+//static void printExpectedAndActual(const stringstream& expected, const stringstream& actual) {
+//	cout << "Expected:" << endl << expected.str() << endl
+//			<< "Actual:" << endl << actual.str() << endl;
+//}
 
 bool messagePriorityTest(){
 	Broker broker;
@@ -605,7 +605,7 @@ bool testSendReceiveMessage() {
 	return true;
 }
 
-int main() {
+bool pubSubTest() {
     RUN_TEST(pubSubTestExample);
     RUN_TEST(clientConstructorTest);
     RUN_TEST(publisherConstructorTest);

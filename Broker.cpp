@@ -38,7 +38,6 @@ void Broker::sendMaintenanceMessageAny(std::list<Topic> list, std::string str) {
 	auto list_end = list.end();
 	for (auto set_it = client_set.begin(); set_it != set_end; set_it++) {
 		for (auto list_it = list.begin(); list_it != list_end; list_it++) {
-			Topic tmp = *list_it;
 			if ((*set_it)->topicExist(*list_it)) {
 				(*set_it)->receiveMaintenanceMessage(str);
 				break;

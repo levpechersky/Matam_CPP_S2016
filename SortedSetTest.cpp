@@ -16,14 +16,14 @@ template<class T, class Compare>
 bool operator==(const SortedSet<T, Compare>& set_1,
 		const SortedSet<T, Compare>& set_2) {
 	auto iterator_1 = set_1.begin(), iterator_2 = set_2.begin(),
-			end = set_1.end();
-	while (iterator_1 != end && iterator_2 != end) {
+			end_1 = set_1.end(), end_2 = set_2.end();
+	while (iterator_1 != end_1 && iterator_2 != end_2) {
 		if (Compare()(*iterator_1, *iterator_2) ||
 				Compare()(*iterator_2++, *iterator_1++)) {
 			return false;
 		}
 	}
-	if (iterator_1 != end || iterator_2 != end) {
+	if (iterator_1 != end_1 || iterator_2 != end_2) {
 		return false;
 	}
 	return true;
@@ -65,7 +65,7 @@ static std::string string(int seed){
 }
 class strCompare{
 public:
-	bool operator()(const std::string& s1, const std::string& s2){
+	bool operator()(const std::string& s1, const std::string& s2) const {
 		return s1.compare(s2) < 0;
 	}
 };
