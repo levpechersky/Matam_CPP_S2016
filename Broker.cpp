@@ -47,6 +47,7 @@ void Broker::sendMaintenanceMessageAny(std::list<Topic> list, std::string str) {
 }
 
 void Broker::sendMaintenanceMessageAll(std::list<Topic> list, std::string str) {
+	if(list.size() == 0) return;
 	auto set_end = client_set.end(), set_it = client_set.begin();
 	for (; set_it != set_end; set_it++) {
 		if (allTopicsMatch(*set_it, list)) {

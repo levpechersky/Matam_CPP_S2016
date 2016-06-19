@@ -437,7 +437,7 @@ bool maintenanceMessageAllTest(){
 	s4.subscribeToTopic("Rock-n-Roll");// 3 of 3
 
 	broker.sendMaintenanceMessageAll(topics, message);
-	//broker.sendMaintenanceMessageAll(empty_list, error); TODO check that case
+	broker.sendMaintenanceMessageAll(empty_list, error);
 
 	stringstream expected;
 	expected << "Client #" << s3.getId() << " received maintenance message: "
@@ -605,7 +605,7 @@ bool testSendReceiveMessage() {
 	return true;
 }
 
-bool pubSubTest() {
+int main() {
     RUN_TEST(pubSubTestExample);
     RUN_TEST(clientConstructorTest);
     RUN_TEST(publisherConstructorTest);
