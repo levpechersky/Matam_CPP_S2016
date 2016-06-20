@@ -22,7 +22,9 @@ void Broker::unsubscribeToTopic(const Subscriber& sub, const Topic& t) {
 	auto it = subscriber_map.find(t);
 	if (it == subscriber_map.end())	return;
 	subscriber_map.at(t).remove(&sub);
-	client_set.remove(&sub);
+	if (sub.outOfTopics()) {
+		client_set.remove(&sub);
+	}
 }
 
 void Broker::publishTopic(const Publisher& pub, const Topic& t) {
@@ -30,7 +32,9 @@ void Broker::publishTopic(const Publisher& pub, const Topic& t) {
 }
 
 void Broker::unpublishTopic(const Publisher& pub, const Topic& t) {
-	client_set.remove(&pub);
+	if (pub.outOfTopics()) {
+		client_set.remove(&pub);
+	}
 }
 
 void Broker::sendMaintenanceMessageAny(std::list<Topic> list, std::string str) {

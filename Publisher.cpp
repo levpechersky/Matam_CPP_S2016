@@ -22,9 +22,7 @@ void Publisher::unpublishTopic(const Topic& t) {
 	if (!set.remove(t)) {
 		throw NonPublishedTopic();
 	} else {
-		if (set.size() == 0) {
-			broker.unpublishTopic(*this, t);
-		}
+		broker.unpublishTopic(*this, t);
 	}
 }
 

@@ -97,6 +97,14 @@ public:
      * 	false otherwise
      */
 	bool topicExist(const Topic& t) const;
+
+    /* Checks whether client published/subscribed to any topic.
+     *
+     * @Return:
+     * 	true if client subscribed to/published no topic
+     * 	false otherwise
+     */
+	bool outOfTopics() const;
 };
 
 #endif //MTM4_CLIENT_H

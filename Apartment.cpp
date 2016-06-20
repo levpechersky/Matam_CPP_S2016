@@ -99,7 +99,7 @@ Apartment& Apartment::operator=(const Apartment& apartment) {
 Apartment& Apartment::operator+=(const Apartment& apartment) {
 	SquareType** joined = nullptr;
 	int tmp_length = length;
-	if (length == apartment.length && width != apartment.length) {
+	if (length == apartment.length && width != apartment.width) {
 		joined = joinLayoutsHorizontally(apartment);
 		width += apartment.width;
 	} else {

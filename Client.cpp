@@ -29,6 +29,10 @@ bool Client::topicExist(const Topic& t) const {
 	return it != this_end;
 }
 
+bool Client::outOfTopics() const {
+	return set.size() == 0;
+}
+
 void Client::receiveMaintenanceMessage(const std::string& s) const {
 	messagesSink << "Client #" << getId() << " received maintenance message: "
 			<< s << std::endl;
