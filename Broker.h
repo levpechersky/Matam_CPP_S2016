@@ -144,7 +144,8 @@ public:
 	 * @Return:
 	 *  none
 	 */
-	void sendMaintenanceMessageAny(const std::list<Topic>& list, const std::string& str) const;
+	void sendMaintenanceMessageAny(const std::list<Topic>& list,
+			const std::string& str) const;
 
 	/* The function sends a control message from Broker to Subscribers/ Publishers
      * that registered / posted to all of Topics list.
@@ -155,7 +156,8 @@ public:
 	 * @Return:
 	 *  none
 	 */
-	void sendMaintenanceMessageAll(const std::list<Topic>& list, const std::string& str) const;
+	void sendMaintenanceMessageAll(const std::list<Topic>& list,
+			const std::string& str) const;
 
 	/* Broker destructor.
 	 * Delete the Broker object (this).

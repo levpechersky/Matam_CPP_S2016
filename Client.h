@@ -50,7 +50,8 @@ public:
      *  @Return:
 	 * 	a new Client object.
      */
-    Client(int priority, BrokerIfc& broker, std::ostream& messagesSink = std::cout);
+	Client(int priority, BrokerIfc& broker, std::ostream& messagesSink =
+			std::cout);
 
     /* Copy C'tor and assignment operator are deleted.
      * Client (or any derived class) cannot be copied or assigned.
