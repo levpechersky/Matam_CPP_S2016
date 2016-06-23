@@ -37,7 +37,7 @@ void Broker::unpublishTopic(const Publisher& pub, const Topic& t) {
 	}
 }
 
-void Broker::sendMaintenanceMessageAny(std::list<Topic> list, std::string str) {
+void Broker::sendMaintenanceMessageAny(const std::list<Topic>& list, const std::string& str) const {
 	auto set_end = client_set.end();
 	auto list_end = list.end();
 	for (auto set_it = client_set.begin(); set_it != set_end; set_it++) {
@@ -50,7 +50,7 @@ void Broker::sendMaintenanceMessageAny(std::list<Topic> list, std::string str) {
 	}
 }
 
-void Broker::sendMaintenanceMessageAll(std::list<Topic> list, std::string str) {
+void Broker::sendMaintenanceMessageAll(const std::list<Topic>& list, const std::string& str) const {
 	if(list.size() == 0) return;
 	auto set_end = client_set.end(), set_it = client_set.begin();
 	for (; set_it != set_end; set_it++) {
@@ -60,7 +60,7 @@ void Broker::sendMaintenanceMessageAll(std::list<Topic> list, std::string str) {
 	}
 }
 
-bool Broker::allTopicsMatch(const Client* client, std::list<Topic> list) {
+bool Broker::allTopicsMatch(const Client* client, const std::list<Topic>& list) {
 	auto list_end = list.end(), list_it = list.begin();
 	for (; list_it != list_end; list_it++) {
 		if (!client->topicExist(*list_it)) {

@@ -30,10 +30,8 @@ class Broker: public BrokerIfc {
 					c1.getId() < c2.getId() :
 					c1.getPriority() < c2.getPriority();
 		}
-		bool operator()(const Client* c1, const Client* c2) const {//TODO may be implemented uisng reference version
-			return c1->getPriority() == c2->getPriority() ?
-					c1->getId() < c2->getId() :
-					c1->getPriority() < c2->getPriority();
+		bool operator()(const Client* c1, const Client* c2) const {
+			return operator()(*c1, *c2);
 		}
 	};
 
@@ -107,7 +105,7 @@ class Broker: public BrokerIfc {
 	 *  	to all of Topics list.
 	 *  false - otherwise.
 	 */
-	static bool allTopicsMatch(const Client* client, std::list<Topic> list);
+	static bool allTopicsMatch(const Client* client, const std::list<Topic>& list);
 
 public:
 
@@ -146,7 +144,7 @@ public:
 	 * @Return:
 	 *  none
 	 */
-	void sendMaintenanceMessageAny(std::list<Topic> list, std::string str);
+	void sendMaintenanceMessageAny(const std::list<Topic>& list, const std::string& str) const;
 
 	/* The function sends a control message from Broker to Subscribers/ Publishers
      * that registered / posted to all of Topics list.
@@ -157,7 +155,7 @@ public:
 	 * @Return:
 	 *  none
 	 */
-	void sendMaintenanceMessageAll(std::list<Topic> list, std::string str);
+	void sendMaintenanceMessageAll(const std::list<Topic>& list, const std::string& str) const;
 
 	/* Broker destructor.
 	 * Delete the Broker object (this).
